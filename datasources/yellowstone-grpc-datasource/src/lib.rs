@@ -2,8 +2,8 @@ use {
     async_trait::async_trait,
     carbon_core::{
         datasource::{
-            AccountUpdate, Datasource, DatasourceDisconnection, DatasourceId, TransactionUpdate,
-            Update, UpdateType,
+            AccountUpdate, BlockDetails, Datasource, DatasourceDisconnection, DatasourceId,
+            TransactionUpdate, Update, UpdateType,
         },
         error::CarbonResult,
         metrics::{Counter, Histogram, MetricsRegistry},
@@ -165,6 +165,9 @@ pub struct YellowstoneGrpcGeyserClient {
     pub block_time_resolver: Option<BlockTimeResolver>,
     pub block_meta_observer: Option<BlockMetaObserver>,
     pub transaction_timing_observer: Option<TransactionTimingObserver>,
+    /// Also forward each blocks_meta update to the pipeline as
+    /// `Update::BlockDetails`, giving it a per-block heartbeat.
+    pub emit_block_details: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -237,6 +240,7 @@ impl YellowstoneGrpcGeyserClient {
             block_time_resolver: None,
             block_meta_observer: None,
             transaction_timing_observer: None,
+            emit_block_details: false,
         }
     }
 
@@ -267,6 +271,11 @@ impl YellowstoneGrpcGeyserClient {
 
     pub fn with_transaction_timing_observer(mut self, observer: TransactionTimingObserver) -> Self {
         self.transaction_timing_observer = Some(observer);
+        self
+    }
+
+    pub fn with_block_details_updates(mut self) -> Self {
+        self.emit_block_details = true;
         self
     }
 }
@@ -393,6 +402,7 @@ impl Datasource for YellowstoneGrpcGeyserClient {
         let block_time_resolver = self.block_time_resolver.clone();
         let block_meta_observer = self.block_meta_observer.clone();
         let tx_timing_observer = self.transaction_timing_observer.clone();
+        let emit_block_details = self.emit_block_details;
 
         tokio::spawn(async move {
             let subscribe_request = SubscribeRequest {
@@ -568,6 +578,9 @@ impl Datasource for YellowstoneGrpcGeyserClient {
                                                 if let Some(observer) = &block_meta_observer {
                                                     observer(&block_meta, msg.created_at.as_ref());
                                                 }
+                                                if emit_block_details {
+                                                    send_block_details(block_meta, &sender, id_for_loop.clone(), &tag);
+                                                }
                                             }
 
                                             Some(UpdateOneof::Ping(_)) => {
@@ -641,7 +654,31 @@ impl Datasource for YellowstoneGrpcGeyserClient {
         if !self.transaction_filters.is_empty() || has_block_filters {
             update_types.push(UpdateType::Transaction);
         }
+        if self.emit_block_details {
+            update_types.push(UpdateType::BlockDetails);
+        }
         update_types
+    }
+}
+
+fn send_block_details(
+    block_meta: SubscribeUpdateBlockMeta,
+    sender: &Sender<(Update, DatasourceId)>,
+    id: DatasourceId,
+    tag: &str,
+) {
+    let slot = block_meta.slot;
+    let block_details = BlockDetails {
+        slot,
+        block_hash: block_meta.blockhash.parse().ok(),
+        previous_block_hash: block_meta.parent_blockhash.parse().ok(),
+        rewards: None,
+        num_reward_partitions: None,
+        block_time: block_meta.block_time.map(|ts| ts.timestamp),
+        block_height: block_meta.block_height.map(|height| height.block_height),
+    };
+    if let Err(e) = sender.try_send((Update::BlockDetails(block_details), id)) {
+        log::error!("[{tag}] Failed to send block meta update at slot {slot}: {e:?}");
     }
 }
 
