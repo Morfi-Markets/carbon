@@ -776,21 +776,28 @@ async fn send_subscribe_update_transaction_info(
 
     if let Some(transaction_info) = transaction_info {
         let Ok(signature) = Signature::try_from(transaction_info.signature) else {
+            log::error!("Dropping transaction with an invalid signature at slot {slot}");
             return;
         };
         let Some(yellowstone_transaction) = transaction_info.transaction else {
+            log::error!("Dropping transaction {signature} at slot {slot}: no transaction");
             return;
         };
         let Some(yellowstone_tx_meta) = transaction_info.meta else {
+            log::error!("Dropping transaction {signature} at slot {slot}: no meta");
             return;
         };
-        let Ok(versioned_transaction) = create_tx_versioned(yellowstone_transaction) else {
-            return;
+        let versioned_transaction = match create_tx_versioned(yellowstone_transaction) {
+            Ok(transaction) => transaction,
+            Err(err) => {
+                log::error!("Dropping transaction {signature} at slot {slot}: {err}");
+                return;
+            }
         };
         let meta_original = match create_tx_meta(yellowstone_tx_meta) {
             Ok(meta) => meta,
             Err(err) => {
-                log::error!("Failed to create transaction meta: {err:?}");
+                log::error!("Dropping transaction {signature} at slot {slot}: meta: {err}");
                 return;
             }
         };
