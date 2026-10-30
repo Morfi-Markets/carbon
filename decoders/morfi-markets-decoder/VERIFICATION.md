@@ -59,4 +59,3 @@ their JSON-encoded companion captures were available. The corpus is a compatibil
 check, not proof of every program layout or a complete product lifecycle run.
 Full-workspace CI is left to the existing Carbon workflow. The parent indexer and
 its generator are unchanged.
-
