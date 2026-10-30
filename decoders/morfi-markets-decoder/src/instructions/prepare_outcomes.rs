@@ -1,4 +1,4 @@
-//! Preparation uses fixed accounts, four-account tuples and an optional creator signer.
+//! Legacy preparation uses fixed accounts, four-account tuples and an optional creator signer.
 
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
@@ -22,7 +22,7 @@ pub struct OutcomePreparation {
     pub uri: String,
 }
 
-/// Canonical batched outcome preparation instruction.
+/// Preserved legacy batched outcome preparation instruction.
 #[derive(
     borsh::BorshDeserialize, Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
 )]
@@ -32,7 +32,7 @@ pub struct PrepareOutcomes {
 
 impl_carbon_deserialize!(PrepareOutcomes, "0x7002b5f27a101177");
 
-/// Fixed preparation accounts needed to bind outcome creation.
+/// Legacy preparation accounts needed to bind outcome creation.
 #[derive(Debug, Clone)]
 pub struct PrepareOutcomesAccounts {
     pub market: Pubkey,

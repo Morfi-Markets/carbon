@@ -1,3 +1,9 @@
+//! Current instruction context recognition without argument decoding.
+
+/// Raw bytes and ABI account names for a recognized current instruction discriminator.
+///
+/// Argument validity and account presence are not checked by [`Self::decode`].
+/// Use [`Self::accounts`] to map the required positional prefix separately.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq, Hash)]
 pub struct CurrentInstruction {
     pub name: String,

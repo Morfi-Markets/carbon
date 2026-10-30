@@ -1,9 +1,10 @@
-//! Current creation arguments and named account bindings shared by both modes.
+//! Legacy typed creation arguments and 19-account bindings shared by both modes.
+//! Current creation contexts use `current::CurrentInstruction` and a different layout.
 
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
 
-/// Canonical bumps serialized in the current creation argument struct.
+/// PDA bumps serialized in the preserved legacy creation argument struct.
 #[derive(
     borsh::BorshDeserialize,
     borsh::BorshSerialize,
@@ -23,7 +24,7 @@ pub struct CreateMarketPdaBumps {
     pub backer_share_mint: u8,
 }
 
-/// Shared Borsh arguments for conviction and timed creation.
+/// Shared Borsh arguments for legacy conviction and timed creation.
 #[derive(
     borsh::BorshDeserialize,
     borsh::BorshSerialize,
@@ -42,7 +43,7 @@ pub struct CreateMarketParams {
     pub pda_bumps: CreateMarketPdaBumps,
 }
 
-/// Conviction creation instruction.
+/// Legacy conviction creation instruction layout.
 #[derive(
     borsh::BorshDeserialize, Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
 )]
@@ -52,7 +53,7 @@ pub struct CreateMarket {
 
 impl_carbon_deserialize!(CreateMarket, "0x67e261ebc8bcfbfe");
 
-/// Timed creation instruction, using the same account layout.
+/// Legacy timed creation instruction, using the same 19-account layout.
 #[derive(
     borsh::BorshDeserialize, Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
 )]
@@ -62,7 +63,7 @@ pub struct CreateTimedMarket {
 
 impl_carbon_deserialize!(CreateTimedMarket, "0xa660b67f1288aaca");
 
-/// Accounts required to attribute custody, initial backing, and schedule identity.
+/// Preserved legacy creation accounts for custody, backing, and schedule identity.
 #[derive(Debug, Clone)]
 pub struct CreateMarketAccounts {
     pub creator: Pubkey,
@@ -88,7 +89,7 @@ impl ArrangeAccounts for CreateMarket {
 }
 
 impl CreateMarket {
-    /// Arranges accounts using the deployment's program ID as the absent-schedule sentinel.
+    /// Arranges legacy creation accounts using the deployment's absent-schedule sentinel.
     ///
     /// This preserves Anchor optional-account semantics for custom deployments.
     pub fn arrange_accounts_for_program(
@@ -116,7 +117,7 @@ impl CreateMarket {
 }
 
 impl CreateTimedMarket {
-    /// Arranges accounts using the deployment's program ID as the absent-schedule sentinel.
+    /// Arranges legacy creation accounts using the deployment's absent-schedule sentinel.
     pub fn arrange_accounts_for_program(
         accounts: &[solana_instruction::AccountMeta],
         program_id: Pubkey,

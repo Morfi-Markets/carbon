@@ -1,6 +1,6 @@
 # carbon-morfi-cp-swap-decoder
 
-Morfi CP-Swap ABI types and instruction/event decoding for Carbon 2.
+Partial Morfi CP-Swap compatibility decoder and ABI types for Carbon 2.
 Extracted from Morfi monorepo `ef225925c085ed1d0b5c31063b695729767a473c`.
 
 ```rust
@@ -22,6 +22,11 @@ required positional prefix; it does not verify signer or writable privileges.
 This PR makes decoders available in the Morfi public fork. It does not switch
 the indexer to these crates or change deployed behavior. The legacy generator is
 not included; the ABI source is pinned rather than regenerated.
+
+Supported instructions are `CreateAmmConfig`, `UpdateAmmConfig`, and
+`UpdatePoolStatus`, plus `LpChange` and `Swap` CPI events. `AmmConfig` supports
+`CarbonDeserialize` byte decoding; an `AccountDecoder` is not implemented. This
+crate is not a complete generated IDL package.
 
 The swap layout includes trade, protocol, fund, and creator fee fields, fee-side
 flags, and token owners. Short historical swap layouts are rejected.

@@ -59,3 +59,26 @@ their JSON-encoded companion captures were available. The corpus is a compatibil
 check, not proof of every program layout or a complete product lifecycle run.
 Full-workspace CI is left to the existing Carbon workflow. The parent indexer and
 its generator are unchanged.
+
+## Public API review corrections
+
+A strict public-type compiler check reproduced four inaccessible exported-field or
+account-result types before the fix. All four now have public reexports. The check
+passes with the diagnostic denied:
+
+```sh
+cargo rustc --locked -p carbon-morfi-markets-decoder --lib -- -D unnameable_types
+```
+
+The documentation distinguishes current raw instruction contexts from preserved
+legacy typed layouts and makes the partial compatibility scope explicit. The
+CP-Swap legacy-layout regression now removes protocol/fund fee fields at byte 177,
+including the complete CPI discriminator and timestamp in the offset.
+
+After these corrections, all 22 focused tests, Clippy with warnings denied, and
+Rustdoc with warnings denied passed again. Logs are retained in the local
+verification artifact as `review-tests.log`, `review-clippy.log`, and
+`review-rustdoc.log`. No decoding or account-arrangement behavior changed.
+
+Both crates also passed actual `cargo package --locked --exclude-lockfile`
+verification against registry dependencies, not just local workspace paths.

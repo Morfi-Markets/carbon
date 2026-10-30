@@ -1,5 +1,6 @@
 //! MorfiMarketsEvent dispatch enum and InstructionDecoder impl.
-//! Imports the SHADOW types from `super::events` (NOT from morfi_events).
+//! Current discriminator contexts take priority over preserved legacy typed layouts.
+//! Account arrangement is separate from instruction decoding.
 
 use super::events::{
     BackerFeeClaimedEvent, BackingEvent, GiftClaimed, GiftCreated, GraduationEvent,
@@ -10,12 +11,12 @@ use carbon_core::deserialize::CarbonDeserialize;
 
 mod add_outcome;
 mod back;
-pub use add_outcome::AddOutcome;
+pub use add_outcome::{AddOutcome, AddOutcomeAccounts};
 mod create_market;
 mod prepare_outcomes;
 pub use back::Back;
 pub use create_market::{
-    CreateMarket, CreateMarketAccounts, CreateMarketParams, CreateTimedMarket,
+    CreateMarket, CreateMarketAccounts, CreateMarketParams, CreateMarketPdaBumps, CreateTimedMarket,
 };
 pub use prepare_outcomes::{
     OutcomePreparation, PrepareOutcomes, PrepareOutcomesAccounts, PreparedOutcomeAccounts,
@@ -28,9 +29,11 @@ mod update_timed_market_schedule;
 pub use init_conviction_market_config::{
     InitConvictionMarketConfig, InitConvictionMarketConfigInstructionAccounts,
 };
-pub use init_event_schedule::InitEventSchedule;
+pub use init_event_schedule::{InitEventSchedule, InitEventScheduleAccounts};
 pub use init_timed_market_config::InitTimedMarketConfig;
-pub use update_timed_market_schedule::UpdateTimedMarketSchedule;
+pub use update_timed_market_schedule::{
+    UpdateTimedMarketSchedule, UpdateTimedMarketScheduleAccounts,
+};
 
 #[derive(
     carbon_core::InstructionType,

@@ -1,8 +1,9 @@
-//! Current back call, decoded only to bind the funding event to its parent market.
+//! Legacy typed backing layout retained for compatibility.
+//! Use `current::CurrentInstruction` for the current account ordering.
 
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 
-/// Net quote deposit argument of the current backing instruction.
+/// Quote deposit argument for the preserved legacy backing layout.
 #[derive(
     borsh::BorshDeserialize, Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
 )]

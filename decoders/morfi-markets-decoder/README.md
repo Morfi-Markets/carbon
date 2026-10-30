@@ -1,6 +1,6 @@
 # carbon-morfi-markets-decoder
 
-Morfi Markets ABI types and instruction/event decoding for Carbon 2.
+Partial Morfi Markets compatibility decoder and ABI types for Carbon 2.
 Extracted from Morfi monorepo `ef225925c085ed1d0b5c31063b695729767a473c`.
 
 ```rust
@@ -15,10 +15,27 @@ It has no dependency on the Morfi indexer, database, environment, or contracts.
 The public tuple-variant enum deliberately preserves the existing Morfi API instead
 of adopting Carbon 2's generated struct-variant schema. Serde remains enabled.
 
-The decoder accepts only its configured program ID. Unknown or malformed data
-returns `None`. Borsh layouts permit trailing bytes except the Markets configuration
-initializers, which retain exact-size checks. Account arrangement checks the
-required positional prefix; it does not verify signer or writable privileges.
+The decoder accepts only its configured program ID. Unknown discriminators and
+malformed supported event payloads return `None`. Recognized current instruction
+contexts retain their raw bytes without validating arguments or account presence.
+Borsh layouts permit trailing bytes except the typed configuration initializers,
+which retain exact-size checks. Account arrangement is separate from decoding and
+does not verify signer or writable privileges.
+
+Use `current::CurrentInstruction` for recognized current instructions and
+`current::CurrentEvent` for current typed CPI events. Current instruction account
+mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
+
+`Back`, `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
+`instructions` preserve earlier typed layouts. Do not use their account helpers on
+current instructions: account counts and positions differ. Some share current
+instruction discriminators, so the main decoder returns `CurrentInstruction`
+before considering legacy typed variants. Legacy `AddOutcome` arrangement requires
+exactly five accounts rather than accepting an arbitrary suffix.
+
+Typed configuration and schedule support is also retained through
+`InitConvictionMarketConfig`, `InitTimedMarketConfig`, `InitEventSchedule`, and
+`UpdateTimedMarketSchedule`. This crate is not a complete generated IDL package.
 
 This PR makes decoders available in the Morfi public fork. It does not switch
 the indexer to these crates or change deployed behavior. The legacy generator is
@@ -40,7 +57,8 @@ serializer is preserved without adding a new deserializer.
 
 See [verification](VERIFICATION.md) and fixture provenance under `tests/fixtures`.
 
-For custom deployments, call `CreateMarket::arrange_accounts_for_program` or
+For the preserved legacy creation layouts on custom deployments, call
+`CreateMarket::arrange_accounts_for_program` or
 `CreateTimedMarket::arrange_accounts_for_program` with the configured program ID.
 Their `ArrangeAccounts` trait implementations use the default devnet program ID
 for the optional schedule sentinel. The account list's program slot is not trusted

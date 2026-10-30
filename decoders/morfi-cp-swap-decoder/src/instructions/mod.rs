@@ -165,7 +165,7 @@ mod tests {
         // The old SwapEvent omitted these two u64 fee-liability fields between
         // trade_fee and creator_fee. The normal event discriminator now
         // requires the complete layout, so historical payloads must fail.
-        let fee_split_start = 8 + 8 + 32 + (8 * 6) + 1 + (32 * 2) + 8;
+        let fee_split_start = SwapEvent::DISCRIMINATOR.len() + 8 + 32 + (8 * 6) + 1 + (32 * 2) + 8;
         legacy_layout.drain(fee_split_start..fee_split_start + 16);
 
         assert!(

@@ -1,4 +1,4 @@
-//! Exact existing mintless CPI layouts and successful parent instruction contexts.
+//! Typed current CPI events and discriminator-based parent instruction contexts.
 
 mod events_0;
 pub use events_0::*;
