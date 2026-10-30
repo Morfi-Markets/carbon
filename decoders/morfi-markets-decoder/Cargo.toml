@@ -1,0 +1,27 @@
+[package]
+name = "carbon-morfi-markets-decoder"
+version = "2.0.0"
+rust-version = { workspace = true }
+edition = { workspace = true }
+description = "Morfi Markets ABI decoder for Carbon"
+license = { workspace = true }
+readme = "README.md"
+repository = "https://github.com/Morfi-Markets/carbon"
+keywords = ["solana", "decoder", "morfi"]
+categories = ["encoding"]
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+borsh = { workspace = true, features = ["derive"] }
+carbon-core = { workspace = true, features = ["macros"] }
+log = { workspace = true }
+serde = { workspace = true }
+solana-instruction = { workspace = true }
+solana-pubkey = { workspace = true }
+strum_macros = "0.28"
+
+[dev-dependencies]
+bs58 = { workspace = true, features = ["alloc"] }
+serde_json = { workspace = true }

@@ -1,0 +1,22 @@
+[package]
+name = "carbon-morfi-cp-swap-decoder"
+version = "2.0.0"
+rust-version = { workspace = true }
+edition = { workspace = true }
+description = "Morfi CP-Swap ABI decoder for Carbon"
+license = { workspace = true }
+readme = "README.md"
+repository = "https://github.com/Morfi-Markets/carbon"
+keywords = ["solana", "decoder", "morfi"]
+categories = ["encoding"]
+
+[lib]
+crate-type = ["rlib"]
+
+[dependencies]
+borsh = { workspace = true, features = ["derive"] }
+carbon-core = { workspace = true, features = ["macros"] }
+serde = { workspace = true }
+solana-instruction = { workspace = true }
+solana-pubkey = { workspace = true }
+

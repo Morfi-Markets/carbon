@@ -1,0 +1,17 @@
+{
+  "events": [
+    {
+      "name": "SellCapApplied",
+      "discriminator": [
+        62,
+        155,
+        35,
+        130,
+        188,
+        100,
+        35,
+        58
+      ]
+    }
+  ]
+}
