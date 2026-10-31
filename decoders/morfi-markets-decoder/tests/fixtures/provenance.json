@@ -1,0 +1,36 @@
+{
+  "monorepo_revision": "ef225925c085ed1d0b5c31063b695729767a473c",
+  "fixtures": [
+    {
+      "source": "backend/indexer-service/tests/fixtures/markets/current_cleanup/config.json",
+      "source_sha256": "55de6816af5b09a337609653b581a7d3a32b383b184c7448d4fdeca5e78c4639",
+      "signature": "3mL2NbXYHb9L2kYB3nir7o5xAgGBTQwg5ohKefMNSsyjPHVZuwxjgS3VmYsjGscpJqkyooz4buydJkBaUk3hmqns",
+      "slot": 51,
+      "path": "top:1",
+      "fixture": "conviction-config.bin",
+      "fixture_sha256": "6cf4a2e988a9257613bff00ce88ac7dafd6da6d57fb80f2f14b305770fd69c6b"
+    },
+    {
+      "source": "backend/indexer-service/tests/fixtures/markets/current_schedules/config.json",
+      "source_sha256": "afc141eb0ad95bd5ac5ffc209f7f3c09cdc6fef92ec2ba72651376d50243fcb3",
+      "signature": "3vxRS8qEsxgKZ1ZSNsgJWGrEcushPs7b24TYLheDM5EyS4sxuudr44B6r5ZmaKQM1DjWAJYHeSeMaNwoeqED524z",
+      "slot": 227,
+      "path": "top:1",
+      "fixture": "timed-config.bin",
+      "fixture_sha256": "6eb5fccd398861aaacfd793954ac0584657021126950cdf989d132307a09671b"
+    },
+    {
+      "fixture": "boost.base58",
+      "source": "backend/indexer-service/tests/fixtures/markets/boost_market_devnet/transaction.json",
+      "source_sha256": "c2b162417690144030e9213102b16edae99bd4c4097000a3518b60e5697b4a01",
+      "signature": "4eAtG79Xs8z52689dhWmsejcPJwjdsQFf19HD6RM8YdZ4NzZjmcq8cnwK8Rid9npYGhgPKqcTBkmx3pvzxHbqxZh",
+      "slot": 466141330
+    },
+    {
+      "fixture": "sell-cap.json",
+      "source": "packages/sdks/contract-sdk/idl/markets.sell-cap.json",
+      "source_sha256": "d667a4fb2d26e155008adfc5c88da76dc2b837789f8bd425377df2064ee79d95",
+      "extraction": "Only SellCapApplied event metadata; not the full IDL."
+    }
+  ]
+}

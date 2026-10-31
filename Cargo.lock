@@ -2066,6 +2066,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "carbon-morfi-cp-swap-decoder"
+version = "2.0.0"
+dependencies = [
+ "borsh",
+ "carbon-core",
+ "serde",
+ "solana-instruction",
+ "solana-pubkey 4.2.1",
+]
+
+[[package]]
+name = "carbon-morfi-markets-decoder"
+version = "2.0.0"
+dependencies = [
+ "borsh",
+ "bs58",
+ "carbon-core",
+ "log",
+ "serde",
+ "serde_json",
+ "solana-instruction",
+ "solana-pubkey 4.2.1",
+ "strum_macros",
+]
+
+[[package]]
 name = "carbon-mpl-core-decoder"
 version = "2.0.0"
 dependencies = [
