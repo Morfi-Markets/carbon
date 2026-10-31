@@ -1,13 +1,19 @@
 //! Typed current CPI events and discriminator-based parent instruction contexts.
 
-mod events_0;
-pub use events_0::*;
-mod events_1;
-pub use events_1::*;
-mod events_2;
-pub use events_2::*;
-mod events_3;
-pub use events_3::*;
+mod market_lifecycle_events;
+pub use market_lifecycle_events::*;
+mod resolution_events;
+pub use resolution_events::*;
+mod trade_and_backing_events;
+pub use trade_and_backing_events::*;
+mod claim_events;
+pub use claim_events::*;
+mod reward_events;
+pub use reward_events::*;
+mod position_events;
+pub use position_events::*;
+mod token_launch_events;
+pub use token_launch_events::*;
 
 #[derive(
     Debug,
@@ -54,9 +60,9 @@ pub enum CurrentEvent {
     WinningOutcomeVaultClosedEvent(WinningOutcomeVaultClosedEvent),
 }
 mod decode;
-mod instruction;
-mod serialization;
-pub use instruction::CurrentInstruction;
+mod instruction_context;
+mod u128_as_string;
+pub use instruction_context::CurrentInstruction;
 mod instruction_accounts;
 
 pub use instruction_accounts::IncompleteInstructionAccounts;

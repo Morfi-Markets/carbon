@@ -47,10 +47,13 @@ impl CurrentEvent {
         )
     }
     pub fn decode(data: &[u8]) -> Option<Self> {
-        events_0::decode_events_0(data)
-            .or_else(|| events_1::decode_events_1(data))
-            .or_else(|| events_2::decode_events_2(data))
-            .or_else(|| events_3::decode_events_3(data))
+        market_lifecycle_events::decode_market_lifecycle_events(data)
+            .or_else(|| resolution_events::decode_resolution_events(data))
+            .or_else(|| trade_and_backing_events::decode_trade_and_backing_events(data))
+            .or_else(|| claim_events::decode_claim_events(data))
+            .or_else(|| reward_events::decode_reward_events(data))
+            .or_else(|| position_events::decode_position_events(data))
+            .or_else(|| token_launch_events::decode_token_launch_events(data))
     }
     pub fn name(&self) -> &'static str {
         self.into()

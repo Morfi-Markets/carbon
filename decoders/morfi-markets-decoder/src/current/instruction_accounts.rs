@@ -1,5 +1,5 @@
 //! Positional context for recognized Markets instructions.
-use super::instruction::CurrentInstruction;
+use super::instruction_context::CurrentInstruction;
 use solana_instruction::AccountMeta;
 use solana_pubkey::Pubkey;
 use std::{collections::BTreeMap, error::Error, fmt};

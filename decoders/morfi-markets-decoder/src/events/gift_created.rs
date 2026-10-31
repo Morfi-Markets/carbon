@@ -1,6 +1,6 @@
 //! Carbon shadow struct for morfi_events::markets::gift::GiftCreated.
 
-use super::types::GiftKind;
+use super::gift_kind::GiftKind;
 use carbon_core::borsh;
 
 #[derive(
