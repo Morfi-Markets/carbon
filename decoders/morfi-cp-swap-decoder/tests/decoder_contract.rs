@@ -1,5 +1,7 @@
 use carbon_core::instruction::InstructionDecoder;
-use carbon_morfi_cp_swap_decoder::{MorfiCpSwapDecoder, MorfiCpSwapEvent, PROGRAM_ID};
+use carbon_morfi_cp_swap_decoder::{
+    layout::SWAP_BASE_INPUT, MorfiCpSwapDecoder, MorfiCpSwapEvent, PROGRAM_ID,
+};
 use solana_instruction::Instruction;
 use solana_pubkey::Pubkey;
 
@@ -24,4 +26,31 @@ fn configured_cp_swap_program_is_checked_before_decoding() {
     assert!(MorfiCpSwapDecoder::default()
         .decode_instruction(&instruction)
         .is_some());
+}
+
+/// Expected values come from the committed `raydium_cp_swap` IDL.
+#[test]
+fn swap_base_input_layout_is_readable_without_decoding_the_swap() {
+    assert_eq!(SWAP_BASE_INPUT.name, "swap_base_input");
+    assert_eq!(
+        SWAP_BASE_INPUT.discriminator,
+        [143, 190, 90, 218, 196, 30, 51, 222]
+    );
+    assert_eq!(SWAP_BASE_INPUT.account_names.len(), 15);
+    assert_eq!(SWAP_BASE_INPUT.position("payer"), Some(0));
+    assert_eq!(SWAP_BASE_INPUT.position("amm_config"), Some(2));
+    assert_eq!(SWAP_BASE_INPUT.position("input_token_mint"), Some(10));
+    assert_eq!(SWAP_BASE_INPUT.position("output_token_mint"), Some(11));
+    assert_eq!(SWAP_BASE_INPUT.position("program"), Some(14));
+    assert_eq!(SWAP_BASE_INPUT.position("creator"), None);
+    let mut data = SWAP_BASE_INPUT.discriminator.to_vec();
+    data.extend([0; 16]);
+    let instruction = Instruction {
+        program_id: PROGRAM_ID,
+        accounts: vec![],
+        data,
+    };
+    assert!(MorfiCpSwapDecoder::default()
+        .decode_instruction(&instruction)
+        .is_none());
 }

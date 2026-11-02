@@ -94,3 +94,16 @@ The `Back` account arrangement follows the current `back` order.
 the extracted ABI. Its expected account orders come from the committed Markets IDL.
 After the change, all 26 focused tests, Clippy with warnings denied, and Rustdoc
 with warnings denied passed.
+
+## Instruction layout table
+
+`current::INSTRUCTION_LAYOUTS` replaces the discriminator match in
+`CurrentInstruction::decode`. The table was generated from the match arms.
+`every_layout_is_unique_and_matches_its_decoded_context` passed against the
+match implementation before the switch, and it passed again after it. The test
+also checks that names and discriminators are unique. CP-Swap has the
+`layout::SWAP_BASE_INPUT` layout, with expected values from the committed
+`raydium_cp_swap` IDL. The CP-Swap decoder output did not change.
+
+After this change, all 29 focused tests, Clippy with warnings denied, Rustdoc with
+warnings denied, and the `unnameable_types` check passed.

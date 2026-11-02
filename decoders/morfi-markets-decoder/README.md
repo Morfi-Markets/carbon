@@ -26,6 +26,11 @@ Use `current::CurrentInstruction` for recognized current instructions and
 `current::CurrentEvent` for current typed CPI events. Current instruction account
 mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
 
+`current::InstructionLayout` gives the name, discriminator, and ordered account
+names of a current instruction without instruction data. Find a layout with
+`InstructionLayout::named` or `InstructionLayout::for_data`, or read every layout
+in `current::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table.
+
 `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
 `instructions` preserve earlier typed layouts. Do not use their account helpers on
 current instructions: account counts and positions differ. `Back` is the exception:

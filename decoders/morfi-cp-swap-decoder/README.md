@@ -28,6 +28,9 @@ Supported instructions are `CreateAmmConfig`, `UpdateAmmConfig`, and
 `CarbonDeserialize` byte decoding; an `AccountDecoder` is not implemented. This
 crate is not a complete generated IDL package.
 
+`layout::SWAP_BASE_INPUT` gives the discriminator and ordered account names of
+`swap_base_input`. The decoder does not decode this instruction.
+
 The swap layout includes trade, protocol, fund, and creator fee fields, fee-side
 flags, and token owners. Short historical swap layouts are rejected.
 No new logging is added to this existing decoding flow.

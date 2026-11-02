@@ -34,4 +34,5 @@ mod deserialize;
 pub mod accounts;
 pub mod events;
 pub mod instructions;
+pub mod layout;
 pub use instructions::MorfiCpSwapEvent;
