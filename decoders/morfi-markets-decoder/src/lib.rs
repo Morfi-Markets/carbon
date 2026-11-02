@@ -3,8 +3,9 @@
 //! This crate preserves Morfi's existing tuple-variant decoder API on Carbon 2.
 //! Program IDs are supplied explicitly; no process environment is read.
 //!
-//! `layout` has no dependencies. Disable the default `decoder` feature to build
-//! only `layout`, for example in a service that checks instruction accounts.
+//! `layout` and `seeds` have no dependencies. Disable the default `decoder`
+//! feature to build only them, for example in a service that checks instruction
+//! accounts or derives PDAs.
 
 #[cfg(feature = "decoder")]
 use solana_pubkey::Pubkey;
@@ -47,6 +48,7 @@ pub mod events;
 #[cfg(feature = "decoder")]
 pub mod instructions;
 pub mod layout;
+pub mod seeds;
 #[cfg(feature = "decoder")]
 pub mod types;
 #[cfg(feature = "decoder")]

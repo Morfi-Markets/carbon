@@ -37,9 +37,13 @@ one for each `CurrentEvent` variant. An event payload starts with
 `layout::ANCHOR_EVENT_TAG` and then the discriminator. `CurrentEvent::recognizes`
 uses the same table.
 
-The `layout` module has no dependencies. Set `default-features = false` to build
-only `layout`. The default `decoder` feature adds Carbon decoding, the ABI types,
-and their Solana dependencies.
+`seeds` gives the first seed of each Markets PDA, for example
+`seeds::USER_POSITIONS`. Each constant's documentation gives the other seeds in
+order. `seeds::ALL` lists them.
+
+The `layout` and `seeds` modules have no dependencies. Set
+`default-features = false` to build only them. The default `decoder` feature adds
+Carbon decoding, the ABI types, and their Solana dependencies.
 
 `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
 `instructions` preserve earlier typed layouts. Do not use their account helpers on

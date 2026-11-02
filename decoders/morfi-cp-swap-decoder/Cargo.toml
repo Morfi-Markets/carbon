@@ -15,8 +15,8 @@ crate-type = ["rlib"]
 
 [features]
 default = ["decoder"]
-# Carbon decoding and ABI types. Without it, the crate has only `layout`, which
-# has no dependencies.
+# Carbon decoding and ABI types. Without it, the crate has only `layout` and
+# `seeds`, which have no dependencies.
 decoder = [
     "dep:borsh",
     "dep:carbon-core",
