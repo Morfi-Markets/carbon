@@ -10,6 +10,26 @@ pub struct CurrentInstruction {
     pub data: Vec<u8>,
     pub account_names: Vec<String>,
 }
+/// Buy and sell share one account list.
+const TRADE_ACCOUNTS: &[&str] = &[
+    "trader",
+    "payer",
+    "transaction_authority",
+    "market",
+    "market_config",
+    "quote_mint",
+    "user_positions",
+    "market_quote_vault_authority",
+    "market_quote_vault",
+    "platform_fee_vault",
+    "trader_quote_account",
+    "token_program",
+    "system_program",
+    "event_schedule",
+    "event_authority",
+    "program",
+];
+
 impl CurrentInstruction {
     pub fn decode(data: &[u8]) -> Option<Self> {
         let (name, names) = match data.get(..8)? {
@@ -48,6 +68,7 @@ impl CurrentInstruction {
                 "back",
                 &[
                     "backer",
+                    "payer",
                     "transaction_authority",
                     "market",
                     "market_config",
@@ -58,6 +79,7 @@ impl CurrentInstruction {
                     "market_quote_vault",
                     "platform_fee_vault",
                     "token_program",
+                    "system_program",
                     "event_schedule",
                     "event_authority",
                     "program",
@@ -78,25 +100,7 @@ impl CurrentInstruction {
                     "program",
                 ][..],
             ),
-            [102, 6, 61, 18, 1, 218, 235, 234] => (
-                "buy",
-                &[
-                    "trader",
-                    "transaction_authority",
-                    "market",
-                    "market_config",
-                    "quote_mint",
-                    "user_positions",
-                    "market_quote_vault_authority",
-                    "market_quote_vault",
-                    "platform_fee_vault",
-                    "trader_quote_account",
-                    "token_program",
-                    "event_schedule",
-                    "event_authority",
-                    "program",
-                ][..],
-            ),
+            [102, 6, 61, 18, 1, 218, 235, 234] => ("buy", TRADE_ACCOUNTS),
             [234, 26, 209, 192, 20, 160, 240, 25] => (
                 "claim_backer_fees",
                 &[
@@ -181,6 +185,16 @@ impl CurrentInstruction {
             ),
             [223, 251, 206, 38, 191, 118, 102, 148] => (
                 "clear_expired_prize_entitlement",
+                &[
+                    "owner",
+                    "market",
+                    "user_positions",
+                    "event_authority",
+                    "program",
+                ][..],
+            ),
+            [176, 29, 84, 15, 73, 92, 145, 141] => (
+                "clear_settled_loser",
                 &[
                     "owner",
                     "market",
@@ -388,25 +402,7 @@ impl CurrentInstruction {
                     "program",
                 ][..],
             ),
-            [51, 230, 133, 164, 1, 127, 131, 173] => (
-                "sell",
-                &[
-                    "trader",
-                    "transaction_authority",
-                    "market",
-                    "market_config",
-                    "quote_mint",
-                    "user_positions",
-                    "market_quote_vault_authority",
-                    "market_quote_vault",
-                    "platform_fee_vault",
-                    "trader_quote_account",
-                    "token_program",
-                    "event_schedule",
-                    "event_authority",
-                    "program",
-                ][..],
-            ),
+            [51, 230, 133, 164, 1, 127, 131, 173] => ("sell", TRADE_ACCOUNTS),
             [134, 2, 3, 113, 55, 80, 131, 82] => (
                 "sweep_expired_backer_fee_liability",
                 &[

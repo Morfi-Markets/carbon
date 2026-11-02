@@ -82,3 +82,15 @@ verification artifact as `review-tests.log`, `review-clippy.log`, and
 
 Both crates also passed actual `cargo package --locked --exclude-lockfile`
 verification against registry dependencies, not just local workspace paths.
+
+## Sponsored transaction ABI update
+
+Source: Morfi stack revision `7fb762faec`.
+The Markets instructions `buy`, `sell`, and `back` now have the `payer` and
+`system_program` accounts. `clear_settled_loser` is a new current instruction.
+The `Back` account arrangement follows the current `back` order.
+
+`tests/current_abi.rs` was written first. It failed four of four cases against
+the extracted ABI. Its expected account orders come from the committed Markets IDL.
+After the change, all 26 focused tests, Clippy with warnings denied, and Rustdoc
+with warnings denied passed.

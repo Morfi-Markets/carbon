@@ -26,9 +26,11 @@ Use `current::CurrentInstruction` for recognized current instructions and
 `current::CurrentEvent` for current typed CPI events. Current instruction account
 mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
 
-`Back`, `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
+`AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
 `instructions` preserve earlier typed layouts. Do not use their account helpers on
-current instructions: account counts and positions differ. Some share current
+current instructions: account counts and positions differ. `Back` is the exception:
+its account arrangement follows the current sponsored `back` order, with `payer`,
+`transaction_authority`, `user_positions`, and `system_program`. Some share current
 instruction discriminators, so the main decoder returns `CurrentInstruction`
 before considering legacy typed variants. Legacy `AddOutcome` arrangement requires
 exactly five accounts rather than accepting an arbitrary suffix.
