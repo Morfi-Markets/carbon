@@ -40,7 +40,7 @@ pub enum CurrentEvent {
     WalletExpiredBackingRefundEvent(WalletExpiredBackingRefundEvent),
     WalletOutcomeEntitlementClearedEvent(WalletOutcomeEntitlementClearedEvent),
     WalletOutcomeTokensWithdrawnEvent(WalletOutcomeTokensWithdrawnEvent),
-    WalletPrincipalPrizeClaimedEvent(WalletPrincipalPrizeClaimedEvent),
+    WalletPrincipalBonusClaimedEvent(WalletPrincipalBonusClaimedEvent),
     WalletPrizeClaimedEvent(WalletPrizeClaimedEvent),
     WalletPrizeEntitlementClearedEvent(WalletPrizeEntitlementClearedEvent),
     WalletTradeEvent(WalletTradeEvent),

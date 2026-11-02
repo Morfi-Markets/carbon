@@ -34,7 +34,7 @@ impl CurrentEvent {
             Self::WalletExpiredBackingRefundEvent => WalletExpiredBackingRefundEvent,
             Self::WalletOutcomeEntitlementClearedEvent => WalletOutcomeEntitlementClearedEvent,
             Self::WalletOutcomeTokensWithdrawnEvent => WalletOutcomeTokensWithdrawnEvent,
-            Self::WalletPrincipalPrizeClaimedEvent => WalletPrincipalPrizeClaimedEvent,
+            Self::WalletPrincipalBonusClaimedEvent => WalletPrincipalBonusClaimedEvent,
             Self::WalletPrizeClaimedEvent => WalletPrizeClaimedEvent,
             Self::WalletPrizeEntitlementClearedEvent => WalletPrizeEntitlementClearedEvent,
             Self::WalletTradeEvent => WalletTradeEvent,
@@ -90,7 +90,7 @@ impl CurrentEvent {
                 ts,
                 ..
             })
-            | Self::WalletPrincipalPrizeClaimedEvent(WalletPrincipalPrizeClaimedEvent {
+            | Self::WalletPrincipalBonusClaimedEvent(WalletPrincipalBonusClaimedEvent {
                 ts, ..
             })
             | Self::WalletPrizeClaimedEvent(WalletPrizeClaimedEvent { ts, .. })

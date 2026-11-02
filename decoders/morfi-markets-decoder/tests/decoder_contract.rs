@@ -1,6 +1,7 @@
 use carbon_core::instruction::InstructionDecoder;
 use carbon_morfi_markets_decoder::{
     current::{CurrentEvent, CurrentInstruction},
+    types::FeeConfig,
     MorfiMarketsDecoder, MorfiMarketsEvent, PROGRAM_ID,
 };
 use solana_instruction::{AccountMeta, Instruction};
@@ -65,19 +66,43 @@ fn malformed_known_event_is_distinct_from_an_unknown_discriminator() {
     assert!(CurrentEvent::decode(&[0; 16]).is_none());
 }
 
+/// FeeConfig written into the re-encoded initializer fixtures (see provenance.json).
+const FIXTURE_FEES: FeeConfig = FeeConfig {
+    platform_buy_fee_bps: 100,
+    platform_sell_fee_bps: 100,
+    platform_claim_fee_bps: 100,
+    platform_general_fee_bps: 300,
+    backer_trade_fee_bps: 100,
+    prize_pool_min_fee_bps: 100,
+    buy_prize_pool_max_fee_bps: 500,
+    sell_prize_pool_max_fee_bps: 9_800,
+    sell_progress_delay_factor: 16,
+    sell_gap_weight_bps: 10_000,
+    buy_reference_threshold_ppb: 700_000_000,
+};
+
 #[test]
-fn captured_initializer_lengths_remain_exact() {
+fn initializer_lengths_remain_exact_and_carry_the_fee_config() {
     let decoder = MorfiMarketsDecoder::default();
-    for bytes in [
-        include_bytes!("fixtures/conviction-config.bin").as_slice(),
-        include_bytes!("fixtures/timed-config.bin").as_slice(),
+    for (bytes, expected_len) in [
+        (
+            include_bytes!("fixtures/conviction-config.bin").as_slice(),
+            215,
+        ),
+        (include_bytes!("fixtures/timed-config.bin").as_slice(), 175),
     ] {
+        assert_eq!(bytes.len(), expected_len);
         let mut instruction = Instruction {
             program_id: PROGRAM_ID,
             accounts: vec![],
             data: bytes.to_vec(),
         };
-        assert!(decoder.decode_instruction(&instruction).is_some());
+        let fees = match decoder.decode_instruction(&instruction) {
+            Some(MorfiMarketsEvent::InitConvictionMarketConfig(value)) => value.params.common.fees,
+            Some(MorfiMarketsEvent::InitTimedMarketConfig(value)) => value.params.common.fees,
+            other => panic!("typed config initializer expected, got {other:?}"),
+        };
+        assert_eq!(fees, FIXTURE_FEES);
         instruction.data.push(0);
         assert!(decoder.decode_instruction(&instruction).is_none());
         instruction.data.truncate(bytes.len() - 1);
@@ -146,4 +171,31 @@ fn custom_deployment_optional_schedule_uses_its_program_sentinel() {
         CreateMarket::arrange_accounts_for_program(&accounts, program).expect("concrete schedule");
     assert_eq!(arranged.event_schedule, Some(accounts[16].pubkey));
     assert!(CreateMarket::arrange_accounts_for_program(&accounts[..18], program).is_none());
+}
+
+#[test]
+fn principal_bonus_claim_reads_the_claim_fee_after_principal_gross() {
+    let mut data = vec![
+        0xe4, 0x45, 0xa5, 0x2e, 0x51, 0xcb, 0x9a, 0x1d, 133, 161, 3, 14, 181, 63, 61, 9,
+    ];
+    data.extend_from_slice(&[1; 32]);
+    data.extend_from_slice(&[2; 32]);
+    data.extend_from_slice(&[3; 32]);
+    data.extend_from_slice(&7u16.to_le_bytes());
+    data.push(1);
+    for value in [10u64, 20, 3_000_000, 15_000, 1_500_000, 40, 50] {
+        data.extend_from_slice(&value.to_le_bytes());
+    }
+    data.push(2);
+    data.extend_from_slice(&1_780_000_000i64.to_le_bytes());
+    let Some(CurrentEvent::WalletPrincipalBonusClaimedEvent(event)) = CurrentEvent::decode(&data)
+    else {
+        panic!("current principal bonus claim ABI");
+    };
+    assert_eq!(event.principal_gross, 3_000_000);
+    assert_eq!(event.platform_claim_fee, 15_000);
+    assert_eq!(event.prize_payout, 1_500_000);
+    assert_eq!(event.fee_vault_index, 2);
+    assert_eq!(event.ts, 1_780_000_000);
+    assert!(CurrentEvent::decode(&data[..data.len() - 1]).is_none());
 }

@@ -26,7 +26,7 @@ mod wallet_cash_entitlement_cleared_event;
 mod wallet_expired_backing_refund_event;
 mod wallet_outcome_entitlement_cleared_event;
 mod wallet_outcome_tokens_withdrawn_event;
-mod wallet_principal_prize_claimed_event;
+mod wallet_principal_bonus_claimed_event;
 mod wallet_prize_claimed_event;
 mod wallet_prize_entitlement_cleared_event;
 mod wallet_trade_event;
@@ -59,7 +59,7 @@ pub use wallet_cash_entitlement_cleared_event::WalletCashEntitlementClearedEvent
 pub use wallet_expired_backing_refund_event::WalletExpiredBackingRefundEvent;
 pub use wallet_outcome_entitlement_cleared_event::WalletOutcomeEntitlementClearedEvent;
 pub use wallet_outcome_tokens_withdrawn_event::WalletOutcomeTokensWithdrawnEvent;
-pub use wallet_principal_prize_claimed_event::WalletPrincipalPrizeClaimedEvent;
+pub use wallet_principal_bonus_claimed_event::WalletPrincipalBonusClaimedEvent;
 pub use wallet_prize_claimed_event::WalletPrizeClaimedEvent;
 pub use wallet_prize_entitlement_cleared_event::WalletPrizeEntitlementClearedEvent;
 pub use wallet_trade_event::WalletTradeEvent;

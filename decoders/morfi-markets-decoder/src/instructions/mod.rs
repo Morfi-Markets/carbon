@@ -151,8 +151,8 @@ const CONVICTION_CONFIG_INITIALIZER_DISCRIMINATOR: [u8; 8] =
     [0x0f, 0x81, 0x10, 0x26, 0xe5, 0xc8, 0xd1, 0xf9];
 const TIMED_CONFIG_INITIALIZER_DISCRIMINATOR: [u8; 8] =
     [0xaa, 0x50, 0xf2, 0x3c, 0x73, 0x5f, 0x88, 0x73];
-const CONVICTION_CONFIG_INITIALIZER_LEN: usize = 211;
-const TIMED_CONFIG_INITIALIZER_LEN: usize = 171;
+const CONVICTION_CONFIG_INITIALIZER_LEN: usize = 215;
+const TIMED_CONFIG_INITIALIZER_LEN: usize = 175;
 
 fn has_invalid_config_initializer_length(data: &[u8]) -> bool {
     (data.starts_with(&CONVICTION_CONFIG_INITIALIZER_DISCRIMINATOR)
