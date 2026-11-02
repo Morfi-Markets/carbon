@@ -25,12 +25,12 @@ impl_carbon_deserialize!(UpdateTimedMarketSchedule, "0xe5292091ea9160dd");
 
 /// Updated schedule identity from the five-account prefix.
 #[derive(Debug, Clone)]
-pub struct UpdateTimedMarketScheduleAccounts {
+pub struct UpdateTimedMarketScheduleInstructionAccounts {
     pub event_schedule: solana_pubkey::Pubkey,
 }
 
 impl ArrangeAccounts for UpdateTimedMarketSchedule {
-    type ArrangedAccounts = UpdateTimedMarketScheduleAccounts;
+    type ArrangedAccounts = UpdateTimedMarketScheduleInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -40,7 +40,7 @@ impl ArrangeAccounts for UpdateTimedMarketSchedule {
         else {
             return None;
         };
-        Some(UpdateTimedMarketScheduleAccounts {
+        Some(UpdateTimedMarketScheduleInstructionAccounts {
             event_schedule: event_schedule.pubkey,
         })
     }

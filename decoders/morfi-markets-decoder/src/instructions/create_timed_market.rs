@@ -1,7 +1,7 @@
 //! Legacy timed creation, reusing the conviction creation account layout.
 
 use super::super::types::CreateMarketParams;
-use super::{CreateMarket, CreateMarketAccounts};
+use super::{CreateMarket, CreateMarketInstructionAccounts};
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
 
@@ -20,13 +20,13 @@ impl CreateTimedMarket {
     pub fn arrange_accounts_for_program(
         accounts: &[solana_instruction::AccountMeta],
         program_id: Pubkey,
-    ) -> Option<CreateMarketAccounts> {
+    ) -> Option<CreateMarketInstructionAccounts> {
         CreateMarket::arrange_accounts_for_program(accounts, program_id)
     }
 }
 
 impl ArrangeAccounts for CreateTimedMarket {
-    type ArrangedAccounts = CreateMarketAccounts;
+    type ArrangedAccounts = CreateMarketInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],

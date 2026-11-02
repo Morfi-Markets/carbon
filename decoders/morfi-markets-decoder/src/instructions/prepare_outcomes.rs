@@ -16,7 +16,7 @@ impl_carbon_deserialize!(PrepareOutcomes, "0x7002b5f27a101177");
 
 /// Legacy preparation accounts needed to bind outcome creation.
 #[derive(Debug, Clone)]
-pub struct PrepareOutcomesAccounts {
+pub struct PrepareOutcomesInstructionAccounts {
     pub market: Pubkey,
     pub market_config: Pubkey,
     pub outcome_mint_authority: Pubkey,
@@ -33,7 +33,7 @@ pub struct PreparedOutcomeAccounts {
 }
 
 impl ArrangeAccounts for PrepareOutcomes {
-    type ArrangedAccounts = PrepareOutcomesAccounts;
+    type ArrangedAccounts = PrepareOutcomesInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -55,7 +55,7 @@ impl ArrangeAccounts for PrepareOutcomes {
                 metadata: tuple[3].pubkey,
             })
             .collect();
-        Some(PrepareOutcomesAccounts {
+        Some(PrepareOutcomesInstructionAccounts {
             market: market.pubkey,
             market_config: market_config.pubkey,
             outcome_mint_authority: outcome_mint_authority.pubkey,

@@ -21,12 +21,12 @@ pub struct CreateAmmConfig {
 impl_carbon_deserialize!(CreateAmmConfig, "0x8934edd4d7756c68");
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct CreateAmmConfigAccounts {
+pub struct CreateAmmConfigInstructionAccounts {
     pub amm_config: solana_pubkey::Pubkey,
 }
 
 impl carbon_core::deserialize::ArrangeAccounts for CreateAmmConfig {
-    type ArrangedAccounts = CreateAmmConfigAccounts;
+    type ArrangedAccounts = CreateAmmConfigInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -35,7 +35,7 @@ impl carbon_core::deserialize::ArrangeAccounts for CreateAmmConfig {
         next_account(&mut accounts)?;
         let amm_config = next_account(&mut accounts)?;
         next_account(&mut accounts)?;
-        Some(CreateAmmConfigAccounts { amm_config })
+        Some(CreateAmmConfigInstructionAccounts { amm_config })
     }
 }
 
@@ -50,19 +50,19 @@ pub struct UpdateAmmConfig {
 impl_carbon_deserialize!(UpdateAmmConfig, "0x313cae889a1c74c8");
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct UpdateAmmConfigAccounts {
+pub struct UpdateAmmConfigInstructionAccounts {
     pub amm_config: solana_pubkey::Pubkey,
 }
 
 impl carbon_core::deserialize::ArrangeAccounts for UpdateAmmConfig {
-    type ArrangedAccounts = UpdateAmmConfigAccounts;
+    type ArrangedAccounts = UpdateAmmConfigInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
     ) -> Option<Self::ArrangedAccounts> {
         let mut accounts = accounts.iter();
         next_account(&mut accounts)?;
-        Some(UpdateAmmConfigAccounts {
+        Some(UpdateAmmConfigInstructionAccounts {
             amm_config: next_account(&mut accounts)?,
         })
     }
@@ -78,19 +78,19 @@ pub struct UpdatePoolStatus {
 impl_carbon_deserialize!(UpdatePoolStatus, "0x82576c062ee0757b");
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub struct UpdatePoolStatusAccounts {
+pub struct UpdatePoolStatusInstructionAccounts {
     pub pool_state: solana_pubkey::Pubkey,
 }
 
 impl carbon_core::deserialize::ArrangeAccounts for UpdatePoolStatus {
-    type ArrangedAccounts = UpdatePoolStatusAccounts;
+    type ArrangedAccounts = UpdatePoolStatusInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
     ) -> Option<Self::ArrangedAccounts> {
         let mut accounts = accounts.iter();
         next_account(&mut accounts)?;
-        Some(UpdatePoolStatusAccounts {
+        Some(UpdatePoolStatusInstructionAccounts {
             pool_state: next_account(&mut accounts)?,
         })
     }

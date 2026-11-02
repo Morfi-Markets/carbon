@@ -23,7 +23,7 @@ impl_carbon_deserialize!(InitTimedMarketConfig, "0xaa50f23c735f8873");
 
 impl ArrangeAccounts for InitTimedMarketConfig {
     type ArrangedAccounts =
-        super::init_conviction_market_config::InitConvictionMarketConfigAccounts;
+        super::init_conviction_market_config::InitConvictionMarketConfigInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],

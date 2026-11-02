@@ -23,13 +23,13 @@ impl_carbon_deserialize!(InitEventSchedule, "0x95d1e3ca8cb760ad");
 
 /// Immutable schedule and preset identities from the six-account prefix.
 #[derive(Debug, Clone)]
-pub struct InitEventScheduleAccounts {
+pub struct InitEventScheduleInstructionAccounts {
     pub market_config: solana_pubkey::Pubkey,
     pub event_schedule: solana_pubkey::Pubkey,
 }
 
 impl ArrangeAccounts for InitEventSchedule {
-    type ArrangedAccounts = InitEventScheduleAccounts;
+    type ArrangedAccounts = InitEventScheduleInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -39,7 +39,7 @@ impl ArrangeAccounts for InitEventSchedule {
         else {
             return None;
         };
-        Some(InitEventScheduleAccounts {
+        Some(InitEventScheduleInstructionAccounts {
             market_config: market_config.pubkey,
             event_schedule: event_schedule.pubkey,
         })

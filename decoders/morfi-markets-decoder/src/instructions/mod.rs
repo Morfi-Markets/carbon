@@ -11,26 +11,28 @@ use carbon_core::deserialize::CarbonDeserialize;
 
 mod add_outcome;
 mod back;
-pub use add_outcome::{AddOutcome, AddOutcomeAccounts};
+pub use add_outcome::{AddOutcome, AddOutcomeInstructionAccounts};
 mod create_market;
 mod prepare_outcomes;
 pub use back::Back;
-pub use create_market::{CreateMarket, CreateMarketAccounts};
+pub use create_market::{CreateMarket, CreateMarketInstructionAccounts};
 mod create_timed_market;
 pub use create_timed_market::CreateTimedMarket;
-pub use prepare_outcomes::{PrepareOutcomes, PrepareOutcomesAccounts, PreparedOutcomeAccounts};
+pub use prepare_outcomes::{
+    PrepareOutcomes, PrepareOutcomesInstructionAccounts, PreparedOutcomeAccounts,
+};
 
 mod init_conviction_market_config;
 mod init_event_schedule;
 mod init_timed_market_config;
 mod update_timed_market_schedule;
 pub use init_conviction_market_config::{
-    InitConvictionMarketConfig, InitConvictionMarketConfigAccounts,
+    InitConvictionMarketConfig, InitConvictionMarketConfigInstructionAccounts,
 };
-pub use init_event_schedule::{InitEventSchedule, InitEventScheduleAccounts};
+pub use init_event_schedule::{InitEventSchedule, InitEventScheduleInstructionAccounts};
 pub use init_timed_market_config::InitTimedMarketConfig;
 pub use update_timed_market_schedule::{
-    UpdateTimedMarketSchedule, UpdateTimedMarketScheduleAccounts,
+    UpdateTimedMarketSchedule, UpdateTimedMarketScheduleInstructionAccounts,
 };
 
 #[derive(

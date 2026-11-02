@@ -17,7 +17,7 @@ impl_carbon_deserialize!(CreateMarket, "0x67e261ebc8bcfbfe");
 
 /// Preserved legacy creation accounts for custody, backing, and schedule identity.
 #[derive(Debug, Clone)]
-pub struct CreateMarketAccounts {
+pub struct CreateMarketInstructionAccounts {
     pub creator: Pubkey,
     pub market_config: Pubkey,
     pub market: Pubkey,
@@ -31,7 +31,7 @@ pub struct CreateMarketAccounts {
 }
 
 impl ArrangeAccounts for CreateMarket {
-    type ArrangedAccounts = CreateMarketAccounts;
+    type ArrangedAccounts = CreateMarketInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -47,13 +47,13 @@ impl CreateMarket {
     pub fn arrange_accounts_for_program(
         accounts: &[solana_instruction::AccountMeta],
         program_id: Pubkey,
-    ) -> Option<CreateMarketAccounts> {
+    ) -> Option<CreateMarketInstructionAccounts> {
         let [creator, _payer, market_config, market, _outcome_metadata, quote_mint, creator_quote_account, platform_fee_vault, market_quote_vault, backer_share_mint, creator_backer_share_ata, _system_program, _token_program, _associated_token_program, _admin_config, _config_admin, event_schedule, _event_authority, _program, ..] =
             accounts
         else {
             return None;
         };
-        Some(CreateMarketAccounts {
+        Some(CreateMarketInstructionAccounts {
             creator: creator.pubkey,
             market_config: market_config.pubkey,
             market: market.pubkey,
