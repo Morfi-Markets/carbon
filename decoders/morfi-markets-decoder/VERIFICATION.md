@@ -82,3 +82,42 @@ verification artifact as `review-tests.log`, `review-clippy.log`, and
 
 Both crates also passed actual `cargo package --locked --exclude-lockfile`
 verification against registry dependencies, not just local workspace paths.
+
+## Sponsored transaction ABI update
+
+Source: Morfi stack revision `7fb762faec`.
+The Markets instructions `buy`, `sell`, and `back` now have the `payer` and
+`system_program` accounts. `clear_settled_loser` is a new current instruction.
+The `Back` account arrangement follows the current `back` order.
+
+`tests/current_abi.rs` was written first. It failed four of four cases against
+the extracted ABI. Its expected account orders come from the committed Markets IDL.
+After the change, all 26 focused tests, Clippy with warnings denied, and Rustdoc
+with warnings denied passed.
+
+## Instruction layout table
+
+`current::INSTRUCTION_LAYOUTS` replaces the discriminator match in
+`CurrentInstruction::decode`. The table was generated from the match arms.
+`every_layout_is_unique_and_matches_its_decoded_context` passed against the
+match implementation before the switch, and it passed again after it. The test
+also checks that names and discriminators are unique. CP-Swap has the
+`layout::SWAP_BASE_INPUT` layout, with expected values from the committed
+`raydium_cp_swap` IDL. The CP-Swap decoder output did not change.
+
+After this change, all 29 focused tests, Clippy with warnings denied, Rustdoc with
+warnings denied, and the `unnameable_types` check passed.
+
+`InstructionLayout::position` is a `const fn` in both crates, so a consumer can hold
+a position in a constant. Two tests read positions in constants; they did not
+compile before this change. After it, all 31 focused tests, Clippy with warnings
+denied, and Rustdoc with warnings denied passed.
+
+## Layout-only build
+
+The layouts moved to the dependency-free `layout` module; `current` re-exports
+them. Both crates have a default `decoder` feature that holds every other module
+and dependency. A consumer that sets `default-features = false` gets only
+`layout`, so carbon-core does not pin its Solana versions. The reason: carbon-core
+2.0 pins `solana-transaction-status = "=4.2.2"`, which needs
+`solana-transaction >=4.1.4, <4.2.0` and `solana-message >=4.2.4, <4.5.0`.

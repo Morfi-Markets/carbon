@@ -50,6 +50,7 @@ pub enum CurrentEvent {
 mod decode;
 mod instruction_context;
 mod u128_as_string;
+pub use crate::layout::{InstructionLayout, INSTRUCTION_LAYOUTS};
 pub use instruction_context::CurrentInstruction;
 mod instruction_accounts;
 

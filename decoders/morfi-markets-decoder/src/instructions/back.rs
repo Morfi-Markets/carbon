@@ -1,9 +1,10 @@
-//! Legacy typed backing layout retained for compatibility.
-//! Use `current::CurrentInstruction` for the current account ordering.
+//! Typed backing amount with the current `back` account order.
+//! The decoder returns `current::CurrentInstruction` for this discriminator first.
+//! Use this arrangement to find the market of a parent `back` instruction.
 
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 
-/// Quote deposit argument for the preserved legacy backing layout.
+/// Quote deposit argument of the backing instruction.
 #[derive(
     borsh::BorshDeserialize, Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize,
 )]
@@ -19,7 +20,7 @@ impl ArrangeAccounts for Back {
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
     ) -> Option<Self::ArrangedAccounts> {
-        let [_backer, market, _market_config, _quote_mint, _backer_quote_account, _backer_share_mint, _backer_share_account, _market_quote_vault_authority, _market_quote_vault, _platform_fee_vault, _system_program, _token_program, _associated_token_program, _event_schedule, _event_authority, _program, ..] =
+        let [_backer, _payer, _transaction_authority, market, _market_config, _quote_mint, _backer_quote_account, _user_positions, _market_quote_vault_authority, _market_quote_vault, _platform_fee_vault, _token_program, _system_program, _event_schedule, _event_authority, _program, ..] =
             accounts
         else {
             return None;

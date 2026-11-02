@@ -26,9 +26,30 @@ Use `current::CurrentInstruction` for recognized current instructions and
 `current::CurrentEvent` for current typed CPI events. Current instruction account
 mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
 
-`Back`, `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
+`layout::InstructionLayout` gives the name, discriminator, and ordered account
+names of a current instruction without instruction data. Find a layout with
+`InstructionLayout::named` or `InstructionLayout::for_data`, or read every layout
+in `layout::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table,
+and `current` re-exports both items. `InstructionLayout::position` is a `const fn`.
+
+`layout::EVENT_LAYOUTS` gives the name and discriminator of each current CPI event,
+one for each `CurrentEvent` variant. An event payload starts with
+`layout::ANCHOR_EVENT_TAG` and then the discriminator. `CurrentEvent::recognizes`
+uses the same table.
+
+`seeds` gives the first seed of each Markets PDA, for example
+`seeds::USER_POSITIONS`. Each constant's documentation gives the other seeds in
+order. `seeds::ALL` lists them.
+
+The `layout` and `seeds` modules have no dependencies. Set
+`default-features = false` to build only them. The default `decoder` feature adds
+Carbon decoding, the ABI types, and their Solana dependencies.
+
+`AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
 `instructions` preserve earlier typed layouts. Do not use their account helpers on
-current instructions: account counts and positions differ. Some share current
+current instructions: account counts and positions differ. `Back` is the exception:
+its account arrangement follows the current sponsored `back` order, with `payer`,
+`transaction_authority`, `user_positions`, and `system_program`. Some share current
 instruction discriminators, so the main decoder returns `CurrentInstruction`
 before considering legacy typed variants. Legacy `AddOutcome` arrangement requires
 exactly five accounts rather than accepting an arbitrary suffix.
