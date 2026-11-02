@@ -1,19 +1,7 @@
 //! Typed current CPI events and discriminator-based parent instruction contexts.
 
-mod market_lifecycle_events;
-pub use market_lifecycle_events::*;
-mod resolution_events;
-pub use resolution_events::*;
-mod trade_and_backing_events;
-pub use trade_and_backing_events::*;
-mod claim_events;
-pub use claim_events::*;
-mod reward_events;
-pub use reward_events::*;
-mod position_events;
-pub use position_events::*;
-mod token_launch_events;
-pub use token_launch_events::*;
+mod events;
+pub use events::*;
 
 #[derive(
     Debug,

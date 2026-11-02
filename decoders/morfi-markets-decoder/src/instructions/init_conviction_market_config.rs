@@ -22,7 +22,7 @@ pub struct InitConvictionMarketConfig {
 impl_carbon_deserialize!(InitConvictionMarketConfig, "0x0f811026e5c8d1f9");
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct InitConvictionMarketConfigInstructionAccounts {
+pub struct InitConvictionMarketConfigAccounts {
     pub payer: solana_pubkey::Pubkey,
     pub config_admin: solana_pubkey::Pubkey,
     pub admin_config: solana_pubkey::Pubkey,
@@ -46,7 +46,7 @@ pub struct InitConvictionMarketConfigInstructionAccounts {
 }
 
 impl ArrangeAccounts for InitConvictionMarketConfig {
-    type ArrangedAccounts = InitConvictionMarketConfigInstructionAccounts;
+    type ArrangedAccounts = InitConvictionMarketConfigAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -75,7 +75,7 @@ impl ArrangeAccounts for InitConvictionMarketConfig {
 
         let remaining = iter.as_slice();
 
-        Some(InitConvictionMarketConfigInstructionAccounts {
+        Some(InitConvictionMarketConfigAccounts {
             payer,
             config_admin,
             admin_config,

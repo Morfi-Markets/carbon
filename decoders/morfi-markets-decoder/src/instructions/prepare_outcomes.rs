@@ -1,26 +1,8 @@
 //! Legacy preparation uses fixed accounts, four-account tuples and an optional creator signer.
 
+use super::super::types::OutcomePreparation;
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
-
-/// Immutable token metadata supplied by the creator for one active outcome.
-#[derive(
-    borsh::BorshDeserialize,
-    borsh::BorshSerialize,
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-    Hash,
-    serde::Serialize,
-    serde::Deserialize,
-)]
-pub struct OutcomePreparation {
-    pub outcome_index: u8,
-    pub name: String,
-    pub symbol: String,
-    pub uri: String,
-}
 
 /// Preserved legacy batched outcome preparation instruction.
 #[derive(

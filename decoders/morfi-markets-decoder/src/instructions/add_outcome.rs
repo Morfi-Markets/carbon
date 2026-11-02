@@ -1,7 +1,7 @@
 //! Legacy typed outcome-addition layout with exactly five arranged accounts.
 //! Current outcome-addition contexts use `current::CurrentInstruction`.
 
-use super::OutcomePreparation;
+use super::super::types::OutcomePreparation;
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
 
