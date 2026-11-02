@@ -6,13 +6,41 @@ impl CurrentEvent {
         crate::layout::EventLayout::for_data(data).is_some()
     }
     pub fn decode(data: &[u8]) -> Option<Self> {
-        market_lifecycle_events::decode_market_lifecycle_events(data)
-            .or_else(|| resolution_events::decode_resolution_events(data))
-            .or_else(|| trade_and_backing_events::decode_trade_and_backing_events(data))
-            .or_else(|| claim_events::decode_claim_events(data))
-            .or_else(|| reward_events::decode_reward_events(data))
-            .or_else(|| position_events::decode_position_events(data))
-            .or_else(|| token_launch_events::decode_token_launch_events(data))
+        decode_first_variant!(
+            data,
+            Self::CidOutcomeAddedEvent => CidOutcomeAddedEvent,
+            Self::ExpiredWinningTokensSweptEvent => ExpiredWinningTokensSweptEvent,
+            Self::LogicalResolutionEvent => LogicalResolutionEvent,
+            Self::MarketBoostedEvent => MarketBoostedEvent,
+            Self::MarketFundingCompleted => MarketFundingCompleted,
+            Self::MarketInitializedEvent => MarketInitializedEvent,
+            Self::MarketQuoteCustodyClosedEvent => MarketQuoteCustodyClosedEvent,
+            Self::PlatformRewardPayoutWalletUpdated => PlatformRewardPayoutWalletUpdated,
+            Self::PoolRewardClaimed => PoolRewardClaimed,
+            Self::PoolRewardsCollected => PoolRewardsCollected,
+            Self::PositionSlotLifecycleEvent => PositionSlotLifecycleEvent,
+            Self::PrincipalCashLiabilitiesSweptEvent => PrincipalCashLiabilitiesSweptEvent,
+            Self::PrincipalCashResolutionEvent => PrincipalCashResolutionEvent,
+            Self::PrincipalOpinionCoinLaunchEvent => PrincipalOpinionCoinLaunchEvent,
+            Self::PrincipalTradeEvent => PrincipalTradeEvent,
+            Self::RewardPayoutWalletUpdated => RewardPayoutWalletUpdated,
+            Self::UserPositionsClosedEvent => UserPositionsClosedEvent,
+            Self::UserPositionsInitializedEvent => UserPositionsInitializedEvent,
+            Self::UserPositionsResizedEvent => UserPositionsResizedEvent,
+            Self::WalletBackerEntitlementForfeitedEvent => WalletBackerEntitlementForfeitedEvent,
+            Self::WalletBackerFeeClaimedEvent => WalletBackerFeeClaimedEvent,
+            Self::WalletBackingEvent => WalletBackingEvent,
+            Self::WalletCashEntitlementClearedEvent => WalletCashEntitlementClearedEvent,
+            Self::WalletExpiredBackingRefundEvent => WalletExpiredBackingRefundEvent,
+            Self::WalletOutcomeEntitlementClearedEvent => WalletOutcomeEntitlementClearedEvent,
+            Self::WalletOutcomeTokensWithdrawnEvent => WalletOutcomeTokensWithdrawnEvent,
+            Self::WalletPrincipalPrizeClaimedEvent => WalletPrincipalPrizeClaimedEvent,
+            Self::WalletPrizeClaimedEvent => WalletPrizeClaimedEvent,
+            Self::WalletPrizeEntitlementClearedEvent => WalletPrizeEntitlementClearedEvent,
+            Self::WalletTradeEvent => WalletTradeEvent,
+            Self::WinnerTokenLaunchEvent => WinnerTokenLaunchEvent,
+            Self::WinningOutcomeVaultClosedEvent => WinningOutcomeVaultClosedEvent,
+        )
     }
     pub fn name(&self) -> &'static str {
         self.into()
