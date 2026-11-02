@@ -121,3 +121,20 @@ and dependency. A consumer that sets `default-features = false` gets only
 `layout`, so carbon-core does not pin its Solana versions. The reason: carbon-core
 2.0 pins `solana-transaction-status = "=4.2.2"`, which needs
 `solana-transaction >=4.1.4, <4.2.0` and `solana-message >=4.2.4, <4.5.0`.
+
+## Progressive fee ABI — contracts `2f0a2ce`
+
+Contracts PR #27 replaces the eight fee fields and
+`conviction_reference_margin_ppb` in `CommonMarketConfigParams` with one embedded
+`FeeConfig` (ten `u16` rates and `buy_reference_threshold_ppb: u64`). The typed
+conviction and timed initializers grow from 211 to 215 bytes and from 171 to 175
+bytes. `WalletPrincipalPrizeClaimedEvent` is now `WalletPrincipalBonusClaimedEvent`
+(discriminator `85a1030eb53f3d09`), and its `platform_sell_fee` field is now
+`platform_claim_fee` at the same position. Earlier initializer and claim layouts
+no longer decode.
+
+The two initializer fixtures are the captured 81ace2a initializers re-encoded with
+the 2f0a2ce IDL; `tests/fixtures/provenance.json` records the replaced fields and
+the FeeConfig values. The tests assert the exact lengths, the decoded FeeConfig,
+and the claim fee offset. Focused tests (25), Clippy with `-D warnings`, Rustdoc
+with `-D warnings`, and `cargo fmt --check` passed for this crate.

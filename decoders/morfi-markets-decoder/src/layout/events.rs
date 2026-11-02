@@ -138,8 +138,8 @@ pub const EVENT_LAYOUTS: &[EventLayout] = &[
         discriminator: [89, 172, 0, 172, 78, 17, 91, 221],
     },
     EventLayout {
-        name: "WalletPrincipalPrizeClaimedEvent",
-        discriminator: [142, 210, 10, 124, 97, 143, 162, 184],
+        name: "WalletPrincipalBonusClaimedEvent",
+        discriminator: [133, 161, 3, 14, 181, 63, 61, 9],
     },
     EventLayout {
         name: "WalletPrizeClaimedEvent",
