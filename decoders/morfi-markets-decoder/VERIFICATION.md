@@ -138,3 +138,18 @@ the 2f0a2ce IDL; `tests/fixtures/provenance.json` records the replaced fields an
 the FeeConfig values. The tests assert the exact lengths, the decoded FeeConfig,
 and the claim fee offset. Focused tests (25), Clippy with `-D warnings`, Rustdoc
 with `-D warnings`, and `cargo fmt --check` passed for this crate.
+
+## Back and unback fee ABI — contracts `af0d6bb`
+
+Contracts PR #31 replaces `FeeConfig.platform_general_fee_bps` with
+`platform_back_fee_bps` and `platform_unback_fee_bps` at the same position.
+`FeeConfig` grows by 2 bytes. The typed conviction and timed initializers grow
+from 215 to 217 bytes and from 175 to 177 bytes. Contracts PR #30 removes `payer`
+and `system_program` from `resize_user_positions`, which now has 7 accounts.
+Earlier initializer layouts no longer decode.
+
+The two initializer fixtures are the `2f0a2ce` fixtures with one `u16` inserted
+after `platform_back_fee_bps`. Both new rates keep the earlier general rate (300),
+because that rate applied to back and unback. Focused tests (25), Clippy with
+`-D warnings`, Rustdoc with `-D warnings`, the layout-only build and
+`cargo fmt --check` passed for this crate.

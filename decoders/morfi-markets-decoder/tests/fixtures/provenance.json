@@ -8,9 +8,9 @@
       "slot": 51,
       "path": "top:1",
       "fixture": "conviction-config.bin",
-      "fixture_sha256": "57bda7e4f0b382ab8e00660f0d6417e641505542443bd8f3f0cfaeb9ede5d85c",
-      "layout": "contracts 2f0a2ce (MARKET_LAYOUT_VERSION 25)",
-      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_general 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value."
+      "fixture_sha256": "b7c2bae3665ee91d3e0abc514110ce269db179fa277c999f5ee2630fb6c13f56",
+      "layout": "contracts af0d6bb (MARKET_LAYOUT_VERSION 26)",
+      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_back 300, platform_unback 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value. The af0d6bb FeeConfig replaces platform_general_fee_bps with platform_back_fee_bps and platform_unback_fee_bps; both keep the earlier general rate, which applied to back and unback."
     },
     {
       "source": "backend/indexer-service/tests/fixtures/markets/current_schedules/config.json",
@@ -19,9 +19,9 @@
       "slot": 227,
       "path": "top:1",
       "fixture": "timed-config.bin",
-      "fixture_sha256": "3b6dfdb12e7ee4b7f5fdb9e5f335df323488732298b768f63b7e6d4189ce0b7c",
-      "layout": "contracts 2f0a2ce (MARKET_LAYOUT_VERSION 25)",
-      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_general 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value."
+      "fixture_sha256": "d0164c933b14881c06dc258131fe104ab91c31ff5c313ef09bfa923e08197273",
+      "layout": "contracts af0d6bb (MARKET_LAYOUT_VERSION 26)",
+      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_back 300, platform_unback 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value. The af0d6bb FeeConfig replaces platform_general_fee_bps with platform_back_fee_bps and platform_unback_fee_bps; both keep the earlier general rate, which applied to back and unback."
     },
     {
       "fixture": "boost.base58",
