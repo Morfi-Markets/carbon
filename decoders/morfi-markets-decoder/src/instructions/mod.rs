@@ -131,17 +131,14 @@ impl carbon_core::instruction::InstructionDecoder<'_> for super::MorfiMarketsDec
     }
 }
 
-/// Anchor `emit_cpi!` self-CPI tag. Every markets event discriminator starts with
-/// it, so a payload carrying it is an emitted event rather than a program call.
-const ANCHOR_EVENT_TAG: [u8; 8] = [0xe4, 0x45, 0xa5, 0x2e, 0x51, 0xcb, 0x9a, 0x1d];
-
 /// Full event discriminator: the Anchor tag plus the per-event name hash.
 const DISCRIMINATOR_LEN: usize = 16;
 
 /// Separates emitted events from ordinary program calls, which reach the decoder
-/// on every user instruction and must not be reported as decode failures.
+/// on every user instruction and must not be reported as decode failures. Every
+/// event payload starts with the Anchor self-CPI tag.
 fn is_emitted_event(data: &[u8]) -> bool {
-    data.starts_with(&ANCHOR_EVENT_TAG)
+    data.starts_with(&crate::layout::ANCHOR_EVENT_TAG)
 }
 
 /// Known events that are deliberately not indexed. They decode to nothing

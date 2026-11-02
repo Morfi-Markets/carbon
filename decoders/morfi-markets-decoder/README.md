@@ -32,6 +32,11 @@ names of a current instruction without instruction data. Find a layout with
 in `layout::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table,
 and `current` re-exports both items. `InstructionLayout::position` is a `const fn`.
 
+`layout::EVENT_LAYOUTS` gives the name and discriminator of each current CPI event,
+one for each `CurrentEvent` variant. An event payload starts with
+`layout::ANCHOR_EVENT_TAG` and then the discriminator. `CurrentEvent::recognizes`
+uses the same table.
+
 The `layout` module has no dependencies. Set `default-features = false` to build
 only `layout`. The default `decoder` feature adds Carbon decoding, the ABI types,
 and their Solana dependencies.

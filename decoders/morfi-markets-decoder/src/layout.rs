@@ -1,4 +1,8 @@
-//! Discriminators and ordered account names of the current Markets instructions.
+//! Discriminators and ordered account names of the current Markets instructions,
+//! and discriminators of the current Markets CPI events.
+
+mod events;
+pub use events::{EventLayout, ANCHOR_EVENT_TAG, EVENT_LAYOUTS};
 
 /// ABI name, discriminator, and ordered account names of a current instruction.
 ///
