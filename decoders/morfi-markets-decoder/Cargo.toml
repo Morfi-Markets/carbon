@@ -13,14 +13,28 @@ categories = ["encoding"]
 [lib]
 crate-type = ["rlib"]
 
+[features]
+default = ["decoder"]
+# Carbon decoding and ABI types. Without it, the crate has only `layout`, which
+# has no dependencies.
+decoder = [
+    "dep:borsh",
+    "dep:carbon-core",
+    "dep:log",
+    "dep:serde",
+    "dep:solana-instruction",
+    "dep:solana-pubkey",
+    "dep:strum_macros",
+]
+
 [dependencies]
-borsh = { workspace = true, features = ["derive"] }
-carbon-core = { workspace = true, features = ["macros"] }
-log = { workspace = true }
-serde = { workspace = true }
-solana-instruction = { workspace = true }
-solana-pubkey = { workspace = true }
-strum_macros = "0.28"
+borsh = { workspace = true, features = ["derive"], optional = true }
+carbon-core = { workspace = true, features = ["macros"], optional = true }
+log = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+solana-instruction = { workspace = true, optional = true }
+solana-pubkey = { workspace = true, optional = true }
+strum_macros = { version = "0.28", optional = true }
 
 [dev-dependencies]
 bs58 = { workspace = true, features = ["alloc"] }

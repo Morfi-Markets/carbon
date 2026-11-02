@@ -1,6 +1,6 @@
 //! Current instruction context recognition without argument decoding.
 
-use super::instruction_layout::InstructionLayout;
+use crate::layout::InstructionLayout;
 
 /// Raw bytes and ABI account names for a recognized current instruction discriminator.
 ///

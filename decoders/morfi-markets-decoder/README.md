@@ -26,10 +26,15 @@ Use `current::CurrentInstruction` for recognized current instructions and
 `current::CurrentEvent` for current typed CPI events. Current instruction account
 mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
 
-`current::InstructionLayout` gives the name, discriminator, and ordered account
+`layout::InstructionLayout` gives the name, discriminator, and ordered account
 names of a current instruction without instruction data. Find a layout with
 `InstructionLayout::named` or `InstructionLayout::for_data`, or read every layout
-in `current::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table.
+in `layout::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table,
+and `current` re-exports both items. `InstructionLayout::position` is a `const fn`.
+
+The `layout` module has no dependencies. Set `default-features = false` to build
+only `layout`. The default `decoder` feature adds Carbon decoding, the ABI types,
+and their Solana dependencies.
 
 `AddOutcome`, `CreateMarket`, `CreateTimedMarket`, and `PrepareOutcomes` under
 `instructions` preserve earlier typed layouts. Do not use their account helpers on

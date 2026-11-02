@@ -112,3 +112,12 @@ warnings denied, and the `unnameable_types` check passed.
 a position in a constant. Two tests read positions in constants; they did not
 compile before this change. After it, all 31 focused tests, Clippy with warnings
 denied, and Rustdoc with warnings denied passed.
+
+## Layout-only build
+
+The layouts moved to the dependency-free `layout` module; `current` re-exports
+them. Both crates have a default `decoder` feature that holds every other module
+and dependency. A consumer that sets `default-features = false` gets only
+`layout`, so carbon-core does not pin its Solana versions. The reason: carbon-core
+2.0 pins `solana-transaction-status = "=4.2.2"`, which needs
+`solana-transaction >=4.1.4, <4.2.0` and `solana-message >=4.2.4, <4.5.0`.

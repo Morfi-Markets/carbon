@@ -31,6 +31,10 @@ crate is not a complete generated IDL package.
 `layout::SWAP_BASE_INPUT` gives the discriminator and ordered account names of
 `swap_base_input`. The decoder does not decode this instruction.
 
+The `layout` module has no dependencies. Set `default-features = false` to build
+only `layout`. The default `decoder` feature adds Carbon decoding, the ABI types,
+and their Solana dependencies.
+
 The swap layout includes trade, protocol, fund, and creator fee fields, fee-side
 flags, and token owners. Short historical swap layouts are rejected.
 No new logging is added to this existing decoding flow.
