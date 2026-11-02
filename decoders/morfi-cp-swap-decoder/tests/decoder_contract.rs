@@ -28,6 +28,18 @@ fn configured_cp_swap_program_is_checked_before_decoding() {
         .is_some());
 }
 
+/// Policy code can read positions in constants.
+const SWAP_PAYER: Option<usize> = SWAP_BASE_INPUT.position("payer");
+const SWAP_OUTPUT_MINT: Option<usize> = SWAP_BASE_INPUT.position("output_token_mint");
+const SWAP_CREATOR: Option<usize> = SWAP_BASE_INPUT.position("creator");
+
+#[test]
+fn swap_positions_are_constants() {
+    assert_eq!(SWAP_PAYER, Some(0));
+    assert_eq!(SWAP_OUTPUT_MINT, Some(11));
+    assert_eq!(SWAP_CREATOR, None);
+}
+
 /// Expected values come from the committed `raydium_cp_swap` IDL.
 #[test]
 fn swap_base_input_layout_is_readable_without_decoding_the_swap() {

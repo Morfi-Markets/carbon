@@ -27,9 +27,33 @@ impl InstructionLayout {
     }
 
     /// Finds the position of an account in the instruction account list.
-    pub fn position(&self, account: &str) -> Option<usize> {
-        self.account_names.iter().position(|name| *name == account)
+    ///
+    /// It is a `const fn`, so a consumer can hold a position in a constant.
+    pub const fn position(&self, account: &str) -> Option<usize> {
+        let mut index = 0;
+        while index < self.account_names.len() {
+            if same_name(self.account_names[index], account) {
+                return Some(index);
+            }
+            index += 1;
+        }
+        None
     }
+}
+
+const fn same_name(left: &str, right: &str) -> bool {
+    let (left, right) = (left.as_bytes(), right.as_bytes());
+    if left.len() != right.len() {
+        return false;
+    }
+    let mut index = 0;
+    while index < left.len() {
+        if left[index] != right[index] {
+            return false;
+        }
+        index += 1;
+    }
+    true
 }
 
 /// Buy and sell share one account list.

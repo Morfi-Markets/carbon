@@ -154,3 +154,13 @@ fn every_layout_is_unique_and_matches_its_decoded_context() {
         );
     }
 }
+
+const ADD_OUTCOME_MARKET: Option<usize> = INSTRUCTION_LAYOUTS[0].position("market");
+const ADD_OUTCOME_PAYER: Option<usize> = INSTRUCTION_LAYOUTS[0].position("payer");
+
+#[test]
+fn layout_positions_are_constants() {
+    assert_eq!(INSTRUCTION_LAYOUTS[0].name, "add_outcome");
+    assert_eq!(ADD_OUTCOME_MARKET, Some(2));
+    assert_eq!(ADD_OUTCOME_PAYER, None);
+}

@@ -107,3 +107,8 @@ also checks that names and discriminators are unique. CP-Swap has the
 
 After this change, all 29 focused tests, Clippy with warnings denied, Rustdoc with
 warnings denied, and the `unnameable_types` check passed.
+
+`InstructionLayout::position` is a `const fn` in both crates, so a consumer can hold
+a position in a constant. Two tests read positions in constants; they did not
+compile before this change. After it, all 31 focused tests, Clippy with warnings
+denied, and Rustdoc with warnings denied passed.
