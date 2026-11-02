@@ -1,26 +1,8 @@
 //! Legacy preparation uses fixed accounts, four-account tuples and an optional creator signer.
 
+use super::super::types::OutcomePreparation;
 use carbon_core::{borsh, deserialize::ArrangeAccounts};
 use solana_pubkey::Pubkey;
-
-/// Immutable token metadata supplied by the creator for one active outcome.
-#[derive(
-    borsh::BorshDeserialize,
-    borsh::BorshSerialize,
-    Debug,
-    Clone,
-    PartialEq,
-    Eq,
-    Hash,
-    serde::Serialize,
-    serde::Deserialize,
-)]
-pub struct OutcomePreparation {
-    pub outcome_index: u8,
-    pub name: String,
-    pub symbol: String,
-    pub uri: String,
-}
 
 /// Preserved legacy batched outcome preparation instruction.
 #[derive(
@@ -34,7 +16,7 @@ impl_carbon_deserialize!(PrepareOutcomes, "0x7002b5f27a101177");
 
 /// Legacy preparation accounts needed to bind outcome creation.
 #[derive(Debug, Clone)]
-pub struct PrepareOutcomesAccounts {
+pub struct PrepareOutcomesInstructionAccounts {
     pub market: Pubkey,
     pub market_config: Pubkey,
     pub outcome_mint_authority: Pubkey,
@@ -51,7 +33,7 @@ pub struct PreparedOutcomeAccounts {
 }
 
 impl ArrangeAccounts for PrepareOutcomes {
-    type ArrangedAccounts = PrepareOutcomesAccounts;
+    type ArrangedAccounts = PrepareOutcomesInstructionAccounts;
 
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
@@ -73,7 +55,7 @@ impl ArrangeAccounts for PrepareOutcomes {
                 metadata: tuple[3].pubkey,
             })
             .collect();
-        Some(PrepareOutcomesAccounts {
+        Some(PrepareOutcomesInstructionAccounts {
             market: market.pubkey,
             market_config: market_config.pubkey,
             outcome_mint_authority: outcome_mint_authority.pubkey,
