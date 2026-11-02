@@ -435,12 +435,10 @@ pub const INSTRUCTION_LAYOUTS: &[InstructionLayout] = &[
         discriminator: [59, 43, 92, 134, 202, 40, 13, 236],
         account_names: &[
             "wallet",
-            "payer",
             "transaction_authority",
             "user_positions",
             "admin_config",
             "treasury",
-            "system_program",
             "event_authority",
             "program",
         ],

@@ -71,7 +71,8 @@ const FIXTURE_FEES: FeeConfig = FeeConfig {
     platform_buy_fee_bps: 100,
     platform_sell_fee_bps: 100,
     platform_claim_fee_bps: 100,
-    platform_general_fee_bps: 300,
+    platform_back_fee_bps: 300,
+    platform_unback_fee_bps: 300,
     backer_trade_fee_bps: 100,
     prize_pool_min_fee_bps: 100,
     buy_prize_pool_max_fee_bps: 500,
@@ -87,9 +88,9 @@ fn initializer_lengths_remain_exact_and_carry_the_fee_config() {
     for (bytes, expected_len) in [
         (
             include_bytes!("fixtures/conviction-config.bin").as_slice(),
-            215,
+            217,
         ),
-        (include_bytes!("fixtures/timed-config.bin").as_slice(), 175),
+        (include_bytes!("fixtures/timed-config.bin").as_slice(), 177),
     ] {
         assert_eq!(bytes.len(), expected_len);
         let mut instruction = Instruction {
