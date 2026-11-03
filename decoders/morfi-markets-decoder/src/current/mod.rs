@@ -28,8 +28,8 @@ pub enum CurrentEvent {
     PrincipalCashLiabilitiesSweptEvent(PrincipalCashLiabilitiesSweptEvent),
     PrincipalCashResolutionEvent(PrincipalCashResolutionEvent),
     PrincipalOpinionCoinLaunchEvent(PrincipalOpinionCoinLaunchEvent),
-    PrincipalTradeEvent(PrincipalTradeEvent),
     RewardPayoutWalletUpdated(RewardPayoutWalletUpdated),
+    TradeEvent(TradeEvent),
     UserPositionsClosedEvent(UserPositionsClosedEvent),
     UserPositionsInitializedEvent(UserPositionsInitializedEvent),
     UserPositionsResizedEvent(UserPositionsResizedEvent),
@@ -40,16 +40,14 @@ pub enum CurrentEvent {
     WalletExpiredBackingRefundEvent(WalletExpiredBackingRefundEvent),
     WalletOutcomeEntitlementClearedEvent(WalletOutcomeEntitlementClearedEvent),
     WalletOutcomeTokensWithdrawnEvent(WalletOutcomeTokensWithdrawnEvent),
-    WalletPrincipalBonusClaimedEvent(WalletPrincipalBonusClaimedEvent),
+    WalletPrincipalPrizeClaimedEvent(WalletPrincipalPrizeClaimedEvent),
     WalletPrizeClaimedEvent(WalletPrizeClaimedEvent),
     WalletPrizeEntitlementClearedEvent(WalletPrizeEntitlementClearedEvent),
-    WalletTradeEvent(WalletTradeEvent),
     WinnerTokenLaunchEvent(WinnerTokenLaunchEvent),
     WinningOutcomeVaultClosedEvent(WinningOutcomeVaultClosedEvent),
 }
 mod decode;
 mod instruction_context;
-mod u128_as_string;
 pub use crate::layout::{InstructionLayout, INSTRUCTION_LAYOUTS};
 pub use instruction_context::CurrentInstruction;
 mod instruction_accounts;

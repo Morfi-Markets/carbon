@@ -1,6 +1,10 @@
-use carbon_core::instruction::InstructionDecoder;
+use carbon_core::{borsh, deserialize::CarbonDeserialize, instruction::InstructionDecoder};
 use carbon_morfi_markets_decoder::{
     current::{CurrentEvent, CurrentInstruction},
+    events::{
+        GiftClaimed, MarketFundingCompleted as LegacyMarketFundingCompleted,
+        TradeEvent as LegacyTradeEvent,
+    },
     types::FeeConfig,
     MorfiMarketsDecoder, MorfiMarketsEvent, PROGRAM_ID,
 };
@@ -174,29 +178,106 @@ fn custom_deployment_optional_schedule_uses_its_program_sentinel() {
     assert!(CreateMarket::arrange_accounts_for_program(&accounts[..18], program).is_none());
 }
 
+/// `TradeEvent` and `MarketFundingCompleted` each name a current and a legacy
+/// event, so both share one discriminator. Each body below is accepted by the
+/// legacy layout and rejected by the current one. The indexer processes the
+/// legacy dispatch arms as trades and funding, so such a body must decode to
+/// nothing.
 #[test]
-fn principal_bonus_claim_reads_the_claim_fee_after_principal_gross() {
-    let mut data = vec![
-        0xe4, 0x45, 0xa5, 0x2e, 0x51, 0xcb, 0x9a, 0x1d, 133, 161, 3, 14, 181, 63, 61, 9,
-    ];
-    data.extend_from_slice(&[1; 32]);
-    data.extend_from_slice(&[2; 32]);
-    data.extend_from_slice(&[3; 32]);
-    data.extend_from_slice(&7u16.to_le_bytes());
-    data.push(1);
-    for value in [10u64, 20, 3_000_000, 15_000, 1_500_000, 40, 50] {
-        data.extend_from_slice(&value.to_le_bytes());
+fn a_current_discriminator_with_a_rejected_body_is_not_a_legacy_event() {
+    let trade = legacy_trade();
+    let funding = funding_without_ts();
+    for (name, data, legacy_accepts) in [
+        (
+            "TradeEvent",
+            &trade,
+            LegacyTradeEvent::deserialize(&trade).is_some(),
+        ),
+        (
+            "MarketFundingCompleted",
+            &funding,
+            LegacyMarketFundingCompleted::deserialize(&funding).is_some(),
+        ),
+    ] {
+        assert!(legacy_accepts, "{name}: the legacy layout accepts it");
+        assert_eq!(
+            CurrentEvent::decode(data),
+            None,
+            "{name}: the current layout rejects it"
+        );
+        assert_eq!(
+            decode(data.clone()),
+            None,
+            "{name}: no fall-through to the legacy layout"
+        );
+        assert!(
+            CurrentEvent::recognizes(data),
+            "{name}: the indexer reports it as a recognized event that failed"
+        );
     }
-    data.push(2);
-    data.extend_from_slice(&1_780_000_000i64.to_le_bytes());
-    let Some(CurrentEvent::WalletPrincipalBonusClaimedEvent(event)) = CurrentEvent::decode(&data)
-    else {
-        panic!("current principal bonus claim ABI");
+}
+
+#[test]
+fn a_legacy_only_event_still_reaches_its_legacy_decoder() {
+    let claimed = GiftClaimed {
+        ts: 1_780_000_000,
+        gift_config: Pubkey::new_from_array([1; 32]),
+        mint: Pubkey::new_from_array([2; 32]),
+        handler_hash: [3; 32],
+        recipient: Pubkey::new_from_array([4; 32]),
+        amount: 5_000_000,
     };
-    assert_eq!(event.principal_gross, 3_000_000);
-    assert_eq!(event.platform_claim_fee, 15_000);
-    assert_eq!(event.prize_payout, 1_500_000);
-    assert_eq!(event.fee_vault_index, 2);
-    assert_eq!(event.ts, 1_780_000_000);
-    assert!(CurrentEvent::decode(&data[..data.len() - 1]).is_none());
+    let mut data = GiftClaimed::DISCRIMINATOR.to_vec();
+    data.extend(borsh::to_vec(&claimed).expect("GiftClaimed serializes"));
+    assert!(!CurrentEvent::recognizes(&data));
+    assert_eq!(decode(data), Some(MorfiMarketsEvent::GiftClaimed(claimed)));
+}
+
+/// A legacy-layout trade with the worked example's full exit by A. The
+/// current layout reads its second conviction length from the legacy
+/// conviction values (2,500,000 entries), more than the body holds.
+fn legacy_trade() -> Vec<u8> {
+    let trade = LegacyTradeEvent {
+        market: Pubkey::new_from_array([1; 32]),
+        trader: Pubkey::new_from_array([2; 32]),
+        outcome_index: 0,
+        outcome_mint: Pubkey::new_from_array([5; 32]),
+        side: 1,
+        quote_amount_gross: 93_500_000,
+        bc_amount: 85_505_258_344,
+        base_fee_to_backers: 467_500,
+        base_fee_to_platform: 2_805_000,
+        prize_pool_contribution: 935_000,
+        post_quote_reserves: 1_935_000_000,
+        bc_supply_after: 421_519_636_898,
+        used_penalty_fee: false,
+        claim_rights_supply_after_d6: 421_519_636_898,
+        post_outcome_conviction_ppb: vec![640_000_000, 360_000_000],
+        post_outcome_conviction_target_ppb: vec![1_000_000_000, 0],
+        post_conviction_retention_per_second_ppb: 999_999_000,
+        post_last_conviction_update_ts: 1_780_000_000,
+        ts: 1_780_000_000,
+        post_total_real_quote_reserves: 935_000_000,
+    };
+    let mut data = LegacyTradeEvent::DISCRIMINATOR.to_vec();
+    data.extend(borsh::to_vec(&trade).expect("legacy trade serializes"));
+    data
+}
+
+/// The af0d6bb layout of `MarketFundingCompleted`, before `ts` was appended.
+fn funding_without_ts() -> Vec<u8> {
+    let funding = LegacyMarketFundingCompleted {
+        trading_opens_ts: 1_780_003_600,
+    };
+    let mut data = LegacyMarketFundingCompleted::DISCRIMINATOR.to_vec();
+    data.extend(borsh::to_vec(&funding).expect("funding serializes"));
+    data
+}
+
+fn decode(data: Vec<u8>) -> Option<MorfiMarketsEvent> {
+    MorfiMarketsDecoder::default().decode_instruction(&Instruction {
+        program_id: PROGRAM_ID,
+        accounts: vec![],
+        data,
+    })
 }

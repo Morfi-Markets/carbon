@@ -1,7 +1,8 @@
-//! Carbon shadow struct for current `TradeEvent`.
+//! Carbon shadow struct for the legacy `TradeEvent` layout.
 //!
-//! Field order and types must match
-//! `contracts/markets/programs/markets/src/instructions/trading/trade/events.rs`.
+//! `current::TradeEvent` has the same name, and so the same discriminator.
+//! `MorfiMarketsDecoder::decode_instruction` never falls through to this layout
+//! for a recognized current discriminator.
 
 use carbon_core::borsh;
 

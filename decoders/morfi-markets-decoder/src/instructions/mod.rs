@@ -1,5 +1,6 @@
 //! MorfiMarketsEvent dispatch enum and InstructionDecoder impl.
-//! Current discriminator contexts take priority over preserved legacy typed layouts.
+//! Current discriminator contexts take priority over preserved legacy typed layouts,
+//! and a recognized current event discriminator never falls through to them.
 //! Account arrangement is separate from instruction decoding.
 
 use super::events::{
@@ -85,6 +86,14 @@ impl carbon_core::instruction::InstructionDecoder<'_> for super::MorfiMarketsDec
         if let Some(value) = super::current::CurrentEvent::decode(&instruction.data) {
             return Some(MorfiMarketsEvent::CurrentEvent(value));
         }
+        // A current event and a legacy event with the same name share one
+        // discriminator (MarketBoostedEvent, MarketFundingCompleted, TradeEvent).
+        // A body that the current layout rejects is a malformed current event,
+        // not a legacy one.
+        if let Some(layout) = crate::layout::EventLayout::for_data(&instruction.data) {
+            warn_undecodable_event(&instruction.data, Some(layout.name));
+            return None;
+        }
         if has_invalid_config_initializer_length(&instruction.data) {
             return None;
         }
@@ -115,16 +124,7 @@ impl carbon_core::instruction::InstructionDecoder<'_> for super::MorfiMarketsDec
             && is_emitted_event(&instruction.data)
             && !is_unindexed_event(&instruction.data)
         {
-            log::warn!(
-                "markets.undecodable_event discriminator={} payload_len={}",
-                instruction
-                    .data
-                    .iter()
-                    .take(DISCRIMINATOR_LEN)
-                    .map(|byte| format!("{byte:02x}"))
-                    .collect::<String>(),
-                instruction.data.len().saturating_sub(DISCRIMINATOR_LEN),
-            );
+            warn_undecodable_event(&instruction.data, None);
         }
 
         decoded
@@ -133,6 +133,20 @@ impl carbon_core::instruction::InstructionDecoder<'_> for super::MorfiMarketsDec
 
 /// Full event discriminator: the Anchor tag plus the per-event name hash.
 const DISCRIMINATOR_LEN: usize = 16;
+
+/// Reports an emitted event that no layout accepts. `current_name` is the
+/// current event whose discriminator the payload carries, if any.
+fn warn_undecodable_event(data: &[u8], current_name: Option<&str>) {
+    log::warn!(
+        "markets.undecodable_event discriminator={} name={} payload_len={}",
+        data.iter()
+            .take(DISCRIMINATOR_LEN)
+            .map(|byte| format!("{byte:02x}"))
+            .collect::<String>(),
+        current_name.unwrap_or("unknown"),
+        data.len().saturating_sub(DISCRIMINATOR_LEN),
+    );
+}
 
 /// Separates emitted events from ordinary program calls, which reach the decoder
 /// on every user instruction and must not be reported as decode failures. Every

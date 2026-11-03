@@ -153,3 +153,51 @@ after `platform_back_fee_bps`. Both new rates keep the earlier general rate (300
 because that rate applied to back and unback. Focused tests (25), Clippy with
 `-D warnings`, Rustdoc with `-D warnings`, the layout-only build and
 `cargo fmt --check` passed for this crate.
+
+## One trade event, the earlier claim event name, and `ts` on every event
+
+`current::TradeEvent` decodes one trade event for both economic modes, in place of
+`WalletTradeEvent` and `PrincipalTradeEvent`. It has the `TradeEvent` name, and so
+the discriminator `bddb7fd34ee661ee` of the legacy `events::TradeEvent`. Its
+reserve fields are `post_pool_quote_d6` (x, V0 included), `post_total_quote_reserve_d6`
+(the sum of x − V0) and `post_token_entitlement_supply_d6` (units held, y = T0 −
+this), all `u64`, with `pool_quote_delta_d6` as the change of x. It has no
+`trader_quote_amount_d6`, `pricing_quote_delta_d6`, `used_penalty_fee`,
+`post_conviction_retention_per_second_ppb`, `post_last_conviction_update_ts` or
+`post_outcome_principal_quote_total_d6`. The `u128` JSON serializer had no other
+user and is removed.
+
+The Principal claim event decodes as `WalletPrincipalPrizeClaimedEvent` again
+(discriminator `8ed20a7c618fa2b8`). `platform_sell_fee` carries the claim fee on
+the bonus, and `winner_quote_reserve_after` is the winner's x after the claim.
+`WalletPrincipalBonusClaimedEvent` no longer decodes.
+
+`UserPositionsInitializedEvent`, `UserPositionsResizedEvent`,
+`UserPositionsClosedEvent` and `MarketFundingCompleted` end with `ts`, so
+`CurrentEvent::timestamp()` returns a time for every current event. Their earlier
+layouts, without `ts`, no longer decode.
+
+These layouts are written by hand from the contract's event definitions.
+`tests/current_event_bytes.rs` builds each payload field by field in Borsh order,
+with a distinct value per field, and checks that each layout without `ts` no
+longer decodes. The trade payload is a full Principal exit with V0 = 1,000 USDC
+and T0 = 1,000,000 tokens: x = 1,935.000000 USDC, units held 421,519.636898, so
+y = 578,480.363102. Morfi's `backend/indexer-service/tests/idl_decoder_layouts.rs`
+checks each event name and discriminator against the committed IDL.
+
+`MorfiMarketsDecoder::decode_instruction` now returns `None` for a payload whose
+discriminator is a current event that the current layout rejects, and logs
+`markets.undecodable_event` with that event's name. Before, such a payload fell
+through to the legacy decoders, so a malformed `TradeEvent` or a `MarketFundingCompleted`
+without `ts` decoded as the legacy `Trade` or `MarketFundingCompleted`. Events
+that only have a legacy layout, such as `GiftClaimed`, still decode.
+
+With the early `None` removed, the dispatch test in `tests/decoder_contract.rs`
+fails with the legacy `Trade`. Focused tests (33), Rustdoc with `-D warnings`, the
+`unnameable_types` check, the layout-only build and `cargo fmt --check` passed for
+this crate. With the pinned toolchain (Rust 1.96.1), `cargo clippy --all-targets
+-- -D warnings` is clean. Clippy 0.1.98 (Rust 1.98.1) stops on the inherited
+`clippy::chunks_exact_to_as_chunks` lint at `src/instructions/prepare_outcomes.rs:46`;
+with `-A clippy::chunks_exact_to_as_chunks` it finds nothing else in the crate,
+tests included. Clippy 0.1.96 does not have that lint, so under `-D warnings` it
+rejects the `-A` flag as an unknown lint.
