@@ -16,8 +16,17 @@ The public tuple-variant enum deliberately preserves the existing Morfi API inst
 of adopting Carbon 2's generated struct-variant schema. Serde remains enabled.
 
 The decoder accepts only its configured program ID. Unknown discriminators and
-malformed supported event payloads return `None`. Recognized current instruction
-contexts retain their raw bytes without validating arguments or account presence.
+malformed supported event payloads return `None`. A payload with a current event
+discriminator that the current layout rejects also returns `None`: it is never
+tried against a legacy layout. `TradeEvent`, `MarketFundingCompleted`, and
+`MarketBoostedEvent` share their discriminators with legacy events of the same
+name, so a fall-through would turn a malformed current event into a legacy one.
+Legacy `TradeEvent` history emitted by the same program ID cannot be replayed
+through this decoder, because the current layout reads each such body and either
+rejects it or, when the overlapping bytes happen to fit, misreads it as a current
+`TradeEvent`; current deployments use a fresh program ID.
+Recognized current instruction contexts retain their raw bytes without validating
+arguments or account presence.
 Borsh layouts permit trailing bytes except the typed configuration initializers,
 which retain exact-size checks. Account arrangement is separate from decoding and
 does not verify signer or writable privileges.
@@ -68,13 +77,15 @@ bytes and positional account names. It does not validate instruction arguments.
 including recognized but truncated events. CPI events use the 8-byte Anchor
 self-CPI tag followed by the 8-byte event discriminator.
 
-`markets.undecodable_event` reports undecodable emitted events. A valid
-`SellCapApplied` is intentionally omitted without a warning; malformed payloads
-remain reported. Logging is performed once by the decoder, through `log`.
+`markets.undecodable_event` reports undecodable emitted events, with the
+discriminator, the current event name (`unknown` when the discriminator is not a
+current event), and the payload length. A valid `SellCapApplied` is intentionally
+omitted without a warning; malformed payloads remain reported. Logging is
+performed once by the decoder, through `log`.
 
 Storage-specific JSON conversion, signed `i64` amount validation, accounting wallet
-selection, and transaction locking stay in the indexer. The existing u128 string
-serializer is preserved without adding a new deserializer.
+selection, and transaction locking stay in the indexer. Current events have no
+`u128` field, so no wide-integer string serializer is needed.
 
 See [verification](VERIFICATION.md) and fixture provenance under `tests/fixtures`.
 
