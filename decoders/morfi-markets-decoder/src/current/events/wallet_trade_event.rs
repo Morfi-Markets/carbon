@@ -27,6 +27,10 @@ pub struct WalletTradeEvent {
     pub post_last_conviction_update_ts: i64,
     pub ts: i64,
     pub post_total_real_quote_reserves: u64,
+    /// Pre-upgrade events end before this field; it then decodes as `None`.
+    #[borsh(deserialize_with = "crate::current::callout_code::deserialize")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub callout_code: Option<[u8; 8]>,
 }
 
 impl_carbon_deserialize!(WalletTradeEvent, "0xe445a52e51cb9a1dfbd80b0838f398f7");

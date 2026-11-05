@@ -35,6 +35,30 @@
       "source": "packages/sdks/contract-sdk/idl/markets.sell-cap.json",
       "source_sha256": "d667a4fb2d26e155008adfc5c88da76dc2b837789f8bd425377df2064ee79d95",
       "extraction": "Only SellCapApplied event metadata; not the full IDL."
+    },
+    {
+      "fixture": "wallet-trade-before-callout.bin",
+      "fixture_sha256": "9788c4a8106b33ffa8afb1a54bb8491080184ac78195af979cd29cea72005992",
+      "layout": "contracts af0d6bb, before callout_code (tests/fixtures/markets_before_callout.so)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome curve market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends the empty callout code, which this program ignores."
+    },
+    {
+      "fixture": "wallet-trade-callout.bin",
+      "fixture_sha256": "d5a6a9bfb89a857229a77cc37a2df95a6a9ad1c0d7c3d626c4776d6c90b8a9b9",
+      "layout": "contracts 2569ad8 (callout_code)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome curve market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends callout_code = Some(b\"MORFI-42\")."
+    },
+    {
+      "fixture": "principal-trade-before-callout.bin",
+      "fixture_sha256": "a279717636877eabf3642b551ef2bba357cff13b4f981be74609e9e82ab9e238",
+      "layout": "contracts af0d6bb, before callout_code (tests/fixtures/markets_before_callout.so)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome PrincipalBack market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends the empty callout code, which this program ignores."
+    },
+    {
+      "fixture": "principal-trade-callout.bin",
+      "fixture_sha256": "55ff54c94af06cf80ec6e8f2020522916fb30e3d4a8f04f43528d7184cca2fd7",
+      "layout": "contracts 2569ad8 (callout_code)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome PrincipalBack market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends callout_code = Some(b\"MORFI-42\")."
     }
   ]
 }

@@ -47,6 +47,7 @@ pub enum CurrentEvent {
     WinnerTokenLaunchEvent(WinnerTokenLaunchEvent),
     WinningOutcomeVaultClosedEvent(WinningOutcomeVaultClosedEvent),
 }
+mod callout_code;
 mod decode;
 mod instruction_context;
 mod u128_as_string;

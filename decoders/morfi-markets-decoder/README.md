@@ -76,6 +76,10 @@ Storage-specific JSON conversion, signed `i64` amount validation, accounting wal
 selection, and transaction locking stay in the indexer. The existing u128 string
 serializer is preserved without adding a new deserializer.
 
+`WalletTradeEvent` and `PrincipalTradeEvent` end with `callout_code: Option<[u8; 8]>`.
+Events emitted before the Markets callout upgrade end before this field; they decode
+with `None`. JSON omits the field when it is `None`.
+
 See [verification](VERIFICATION.md) and fixture provenance under `tests/fixtures`.
 
 For the preserved legacy creation layouts on custom deployments, call

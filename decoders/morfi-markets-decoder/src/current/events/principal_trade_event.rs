@@ -30,6 +30,10 @@ pub struct PrincipalTradeEvent {
     pub post_conviction_retention_per_second_ppb: u32,
     pub post_last_conviction_update_ts: i64,
     pub ts: i64,
+    /// Pre-upgrade events end before this field; it then decodes as `None`.
+    #[borsh(deserialize_with = "crate::current::callout_code::deserialize")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub callout_code: Option<[u8; 8]>,
 }
 
 impl_carbon_deserialize!(PrincipalTradeEvent, "0xe445a52e51cb9a1d539092d0bc043664");
