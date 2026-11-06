@@ -20,7 +20,7 @@ impl ArrangeAccounts for Back {
     fn arrange_accounts(
         accounts: &[solana_instruction::AccountMeta],
     ) -> Option<Self::ArrangedAccounts> {
-        let [_backer, _payer, _transaction_authority, market, _market_config, _quote_mint, _backer_quote_account, _user_positions, _market_quote_vault_authority, _market_quote_vault, _platform_fee_vault, _token_program, _system_program, _event_schedule, _event_authority, _program, ..] =
+        let [_backer, _payer, _transaction_authority, market, _market_config, _quote_mint, _backer_quote_account, _user_positions, _market_quote_vault_authority, _market_quote_vault, _platform_fee_vault, _token_program, _system_program, _event_schedule, _market_registry, _event_authority, _program, ..] =
             accounts
         else {
             return None;
