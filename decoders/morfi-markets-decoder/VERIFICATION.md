@@ -201,3 +201,18 @@ this crate. With the pinned toolchain (Rust 1.96.1), `cargo clippy --all-targets
 with `-A clippy::chunks_exact_to_as_chunks` it finds nothing else in the crate,
 tests included. Clippy 0.1.96 does not have that lint, so under `-D warnings` it
 rejects the `-A` flag as an unknown lint.
+
+## Trade event callout code — contracts `24195bc`
+
+`TradeEvent` ends with `callout_code: Option<[u8; 8]>`, the unvalidated argument of
+`buy` and `sell`. Events emitted before the upgrade end before the field. A custom
+reader decodes them with `None`; a tag other than 0 or 1, or a code shorter than
+8 bytes, fails to decode. JSON omits the field when it is `None`, so the stored
+payload of an event without a code does not change.
+
+`tests/callout_code.rs` decodes one buy per economic mode, captured in LiteSVM from
+the pre-upgrade program (contracts `1a5079f`) and the upgraded program, and checks
+that only the code differs. Without the field, the test does not compile. The crate
+tests (37), Rustdoc with `-D warnings`, the layout-only build, `cargo clippy
+--all-targets --all-features -- -D warnings` and `cargo fmt --check` passed with the
+pinned toolchain (Rust 1.96.1).
