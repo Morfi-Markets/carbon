@@ -46,6 +46,11 @@ pub struct TradeEvent {
     pub post_outcome_conviction_target_ppb: Vec<u32>,
     /// Cluster time; conviction is always advanced to exactly this time.
     pub ts: i64,
+    /// The trade instruction's unvalidated code. Pre-upgrade events end before
+    /// this field; it then decodes as `None`.
+    #[borsh(deserialize_with = "crate::current::callout_code::deserialize")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub callout_code: Option<[u8; 8]>,
 }
 
 impl_carbon_deserialize!(TradeEvent, "0xe445a52e51cb9a1dbddb7fd34ee661ee");
