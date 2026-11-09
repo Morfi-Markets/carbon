@@ -8,7 +8,9 @@
       "slot": 51,
       "path": "top:1",
       "fixture": "conviction-config.bin",
-      "fixture_sha256": "6cf4a2e988a9257613bff00ce88ac7dafd6da6d57fb80f2f14b305770fd69c6b"
+      "fixture_sha256": "b7c2bae3665ee91d3e0abc514110ce269db179fa277c999f5ee2630fb6c13f56",
+      "layout": "contracts af0d6bb (MARKET_LAYOUT_VERSION 26)",
+      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_back 300, platform_unback 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value. The af0d6bb FeeConfig replaces platform_general_fee_bps with platform_back_fee_bps and platform_unback_fee_bps; both keep the earlier general rate, which applied to back and unback."
     },
     {
       "source": "backend/indexer-service/tests/fixtures/markets/current_schedules/config.json",
@@ -17,7 +19,9 @@
       "slot": 227,
       "path": "top:1",
       "fixture": "timed-config.bin",
-      "fixture_sha256": "6eb5fccd398861aaacfd793954ac0584657021126950cdf989d132307a09671b"
+      "fixture_sha256": "d0164c933b14881c06dc258131fe104ab91c31ff5c313ef09bfa923e08197273",
+      "layout": "contracts af0d6bb (MARKET_LAYOUT_VERSION 26)",
+      "derivation": "Captured 81ace2a initializer, decoded with the 81ace2a Markets IDL and re-encoded with the 2f0a2ce IDL. The removed fee fields and conviction_reference_margin_ppb are replaced by FeeConfig {platform_buy 100, platform_sell 100, platform_claim 100, platform_back 300, platform_unback 300, backer_trade 100, prize_min 100, buy_prize_max 500, sell_prize_max 9800, sell_progress_delay_factor 16, sell_gap_weight 10000, buy_reference_threshold_ppb 700000000}. Every other field keeps its captured value. The af0d6bb FeeConfig replaces platform_general_fee_bps with platform_back_fee_bps and platform_unback_fee_bps; both keep the earlier general rate, which applied to back and unback."
     },
     {
       "fixture": "boost.base58",
@@ -31,6 +35,30 @@
       "source": "packages/sdks/contract-sdk/idl/markets.sell-cap.json",
       "source_sha256": "d667a4fb2d26e155008adfc5c88da76dc2b837789f8bd425377df2064ee79d95",
       "extraction": "Only SellCapApplied event metadata; not the full IDL."
+    },
+    {
+      "fixture": "trade-curve-before-callout.bin",
+      "fixture_sha256": "5037cb0c0ab2fa74c098f7c87058d6544e629ff7286fb350cde96272779c63a5",
+      "layout": "contracts 1a5079f, before callout_code (tests/fixtures/markets_before_callout.so)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome Curve market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends the empty callout code, which this program ignores."
+    },
+    {
+      "fixture": "trade-curve-callout.bin",
+      "fixture_sha256": "a1dcf10f4a41e40bb4ffe35c67e889361b7ed2499b7a45270f31a0a3b751842d",
+      "layout": "contracts 24195bc (callout_code)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome Curve market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends callout_code = Some(b\"MORFI-42\")."
+    },
+    {
+      "fixture": "trade-principal-before-callout.bin",
+      "fixture_sha256": "e37e197d05dfd6f4f99e9a63be5fb0c599660385a9d558363a4d390728bc29d7",
+      "layout": "contracts 1a5079f, before callout_code (tests/fixtures/markets_before_callout.so)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome PrincipalBack market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends the empty callout code, which this program ignores."
+    },
+    {
+      "fixture": "trade-principal-callout.bin",
+      "fixture_sha256": "8cbe5bb863af85a52a2efc877b5b1e91a2b7349d1966e5e276b6ed546856e268",
+      "layout": "contracts 24195bc (callout_code)",
+      "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome PrincipalBack market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends callout_code = Some(b\"MORFI-42\")."
     }
   ]
 }

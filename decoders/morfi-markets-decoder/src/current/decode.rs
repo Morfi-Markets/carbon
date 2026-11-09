@@ -22,8 +22,8 @@ impl CurrentEvent {
             Self::PrincipalCashLiabilitiesSweptEvent => PrincipalCashLiabilitiesSweptEvent,
             Self::PrincipalCashResolutionEvent => PrincipalCashResolutionEvent,
             Self::PrincipalOpinionCoinLaunchEvent => PrincipalOpinionCoinLaunchEvent,
-            Self::PrincipalTradeEvent => PrincipalTradeEvent,
             Self::RewardPayoutWalletUpdated => RewardPayoutWalletUpdated,
+            Self::TradeEvent => TradeEvent,
             Self::UserPositionsClosedEvent => UserPositionsClosedEvent,
             Self::UserPositionsInitializedEvent => UserPositionsInitializedEvent,
             Self::UserPositionsResizedEvent => UserPositionsResizedEvent,
@@ -37,7 +37,6 @@ impl CurrentEvent {
             Self::WalletPrincipalPrizeClaimedEvent => WalletPrincipalPrizeClaimedEvent,
             Self::WalletPrizeClaimedEvent => WalletPrizeClaimedEvent,
             Self::WalletPrizeEntitlementClearedEvent => WalletPrizeEntitlementClearedEvent,
-            Self::WalletTradeEvent => WalletTradeEvent,
             Self::WinnerTokenLaunchEvent => WinnerTokenLaunchEvent,
             Self::WinningOutcomeVaultClosedEvent => WinningOutcomeVaultClosedEvent,
         )
@@ -51,6 +50,7 @@ impl CurrentEvent {
             | Self::ExpiredWinningTokensSweptEvent(ExpiredWinningTokensSweptEvent { ts, .. })
             | Self::LogicalResolutionEvent(LogicalResolutionEvent { ts, .. })
             | Self::MarketBoostedEvent(MarketBoostedEvent { ts, .. })
+            | Self::MarketFundingCompleted(MarketFundingCompleted { ts, .. })
             | Self::MarketInitializedEvent(MarketInitializedEvent { ts, .. })
             | Self::MarketQuoteCustodyClosedEvent(MarketQuoteCustodyClosedEvent { ts, .. })
             | Self::PlatformRewardPayoutWalletUpdated(PlatformRewardPayoutWalletUpdated {
@@ -68,8 +68,11 @@ impl CurrentEvent {
             | Self::PrincipalOpinionCoinLaunchEvent(PrincipalOpinionCoinLaunchEvent {
                 ts, ..
             })
-            | Self::PrincipalTradeEvent(PrincipalTradeEvent { ts, .. })
             | Self::RewardPayoutWalletUpdated(RewardPayoutWalletUpdated { ts, .. })
+            | Self::TradeEvent(TradeEvent { ts, .. })
+            | Self::UserPositionsClosedEvent(UserPositionsClosedEvent { ts, .. })
+            | Self::UserPositionsInitializedEvent(UserPositionsInitializedEvent { ts, .. })
+            | Self::UserPositionsResizedEvent(UserPositionsResizedEvent { ts, .. })
             | Self::WalletBackerEntitlementForfeitedEvent(
                 WalletBackerEntitlementForfeitedEvent { ts, .. },
             )
@@ -98,15 +101,10 @@ impl CurrentEvent {
                 ts,
                 ..
             })
-            | Self::WalletTradeEvent(WalletTradeEvent { ts, .. })
             | Self::WinnerTokenLaunchEvent(WinnerTokenLaunchEvent { ts, .. })
             | Self::WinningOutcomeVaultClosedEvent(WinningOutcomeVaultClosedEvent { ts, .. }) => {
                 Some(*ts)
             }
-            Self::MarketFundingCompleted(_)
-            | Self::UserPositionsClosedEvent(_)
-            | Self::UserPositionsInitializedEvent(_)
-            | Self::UserPositionsResizedEvent(_) => None,
         }
     }
 }

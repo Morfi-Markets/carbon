@@ -5,6 +5,8 @@
 
 /// `[MARKET, creator, market_nonce]`
 pub const MARKET: &[u8] = b"market";
+/// `[MARKET_REGISTRY]`
+pub const MARKET_REGISTRY: &[u8] = b"market_registry";
 /// `[PLATFORM_FEE_VAULT, market_config, fee_vault_index]`
 pub const PLATFORM_FEE_VAULT: &[u8] = b"platform_fee_vault";
 /// `[OUTCOME_MINT_AUTHORITY, market]`
@@ -39,6 +41,7 @@ pub const EVENT_AUTHORITY: &[u8] = b"__event_authority";
 /// Every seed in this module.
 pub const ALL: &[&[u8]] = &[
     MARKET,
+    MARKET_REGISTRY,
     PLATFORM_FEE_VAULT,
     OUTCOME_MINT_AUTHORITY,
     MARKET_QUOTE_VAULT_AUTHORITY,

@@ -1,4 +1,7 @@
-//! Generated from the frozen Markets IDL; do not modify the contract source.
+//! Hand-written mirror of the contract's `UserPositionsClosedEvent`.
+//! `tests/current_event_bytes.rs` checks its Borsh field order, and Morfi's
+//! `backend/indexer-service/tests/idl_decoder_layouts.rs` checks its name and
+//! discriminator against the committed IDL.
 use carbon_core::borsh;
 use solana_pubkey::Pubkey;
 
@@ -11,6 +14,7 @@ pub struct UserPositionsClosedEvent {
     pub capacity: u16,
     pub treasury: Pubkey,
     pub rent_refunded_lamports: u64,
+    pub ts: i64,
 }
 
 impl_carbon_deserialize!(

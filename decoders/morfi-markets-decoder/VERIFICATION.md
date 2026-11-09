@@ -121,3 +121,98 @@ and dependency. A consumer that sets `default-features = false` gets only
 `layout`, so carbon-core does not pin its Solana versions. The reason: carbon-core
 2.0 pins `solana-transaction-status = "=4.2.2"`, which needs
 `solana-transaction >=4.1.4, <4.2.0` and `solana-message >=4.2.4, <4.5.0`.
+
+## Progressive fee ABI — contracts `2f0a2ce`
+
+Contracts PR #27 replaces the eight fee fields and
+`conviction_reference_margin_ppb` in `CommonMarketConfigParams` with one embedded
+`FeeConfig` (ten `u16` rates and `buy_reference_threshold_ppb: u64`). The typed
+conviction and timed initializers grow from 211 to 215 bytes and from 171 to 175
+bytes. `WalletPrincipalPrizeClaimedEvent` is now `WalletPrincipalBonusClaimedEvent`
+(discriminator `85a1030eb53f3d09`), and its `platform_sell_fee` field is now
+`platform_claim_fee` at the same position. Earlier initializer and claim layouts
+no longer decode.
+
+The two initializer fixtures are the captured 81ace2a initializers re-encoded with
+the 2f0a2ce IDL; `tests/fixtures/provenance.json` records the replaced fields and
+the FeeConfig values. The tests assert the exact lengths, the decoded FeeConfig,
+and the claim fee offset. Focused tests (25), Clippy with `-D warnings`, Rustdoc
+with `-D warnings`, and `cargo fmt --check` passed for this crate.
+
+## Back and unback fee ABI — contracts `af0d6bb`
+
+Contracts PR #31 replaces `FeeConfig.platform_general_fee_bps` with
+`platform_back_fee_bps` and `platform_unback_fee_bps` at the same position.
+`FeeConfig` grows by 2 bytes. The typed conviction and timed initializers grow
+from 215 to 217 bytes and from 175 to 177 bytes. Contracts PR #30 removes `payer`
+and `system_program` from `resize_user_positions`, which now has 7 accounts.
+Earlier initializer layouts no longer decode.
+
+The two initializer fixtures are the `2f0a2ce` fixtures with one `u16` inserted
+after `platform_back_fee_bps`. Both new rates keep the earlier general rate (300),
+because that rate applied to back and unback. Focused tests (25), Clippy with
+`-D warnings`, Rustdoc with `-D warnings`, the layout-only build and
+`cargo fmt --check` passed for this crate.
+
+## One trade event, the earlier claim event name, and `ts` on every event
+
+`current::TradeEvent` decodes one trade event for both economic modes, in place of
+`WalletTradeEvent` and `PrincipalTradeEvent`. It has the `TradeEvent` name, and so
+the discriminator `bddb7fd34ee661ee` of the legacy `events::TradeEvent`. Its
+reserve fields are `post_pool_quote_d6` (x, V0 included), `post_total_quote_reserve_d6`
+(the sum of x − V0) and `post_token_entitlement_supply_d6` (units held, y = T0 −
+this), all `u64`, with `pool_quote_delta_d6` as the change of x. It has no
+`trader_quote_amount_d6`, `pricing_quote_delta_d6`, `used_penalty_fee`,
+`post_conviction_retention_per_second_ppb`, `post_last_conviction_update_ts` or
+`post_outcome_principal_quote_total_d6`. The `u128` JSON serializer had no other
+user and is removed.
+
+The Principal claim event decodes as `WalletPrincipalPrizeClaimedEvent` again
+(discriminator `8ed20a7c618fa2b8`). `platform_sell_fee` carries the claim fee on
+the bonus, and `winner_quote_reserve_after` is the winner's x after the claim.
+`WalletPrincipalBonusClaimedEvent` no longer decodes.
+
+`UserPositionsInitializedEvent`, `UserPositionsResizedEvent`,
+`UserPositionsClosedEvent` and `MarketFundingCompleted` end with `ts`, so
+`CurrentEvent::timestamp()` returns a time for every current event. Their earlier
+layouts, without `ts`, no longer decode.
+
+These layouts are written by hand from the contract's event definitions.
+`tests/current_event_bytes.rs` builds each payload field by field in Borsh order,
+with a distinct value per field, and checks that each layout without `ts` no
+longer decodes. The trade payload is a full Principal exit with V0 = 1,000 USDC
+and T0 = 1,000,000 tokens: x = 1,935.000000 USDC, units held 421,519.636898, so
+y = 578,480.363102. Morfi's `backend/indexer-service/tests/idl_decoder_layouts.rs`
+checks each event name and discriminator against the committed IDL.
+
+`MorfiMarketsDecoder::decode_instruction` now returns `None` for a payload whose
+discriminator is a current event that the current layout rejects, and logs
+`markets.undecodable_event` with that event's name. Before, such a payload fell
+through to the legacy decoders, so a malformed `TradeEvent` or a `MarketFundingCompleted`
+without `ts` decoded as the legacy `Trade` or `MarketFundingCompleted`. Events
+that only have a legacy layout, such as `GiftClaimed`, still decode.
+
+With the early `None` removed, the dispatch test in `tests/decoder_contract.rs`
+fails with the legacy `Trade`. Focused tests (33), Rustdoc with `-D warnings`, the
+`unnameable_types` check, the layout-only build and `cargo fmt --check` passed for
+this crate. With the pinned toolchain (Rust 1.96.1), `cargo clippy --all-targets
+-- -D warnings` is clean. Clippy 0.1.98 (Rust 1.98.1) stops on the inherited
+`clippy::chunks_exact_to_as_chunks` lint at `src/instructions/prepare_outcomes.rs:46`;
+with `-A clippy::chunks_exact_to_as_chunks` it finds nothing else in the crate,
+tests included. Clippy 0.1.96 does not have that lint, so under `-D warnings` it
+rejects the `-A` flag as an unknown lint.
+
+## Trade event callout code — contracts `24195bc`
+
+`TradeEvent` ends with `callout_code: Option<[u8; 8]>`, the unvalidated argument of
+`buy` and `sell`. Events emitted before the upgrade end before the field. A custom
+reader decodes them with `None`; a tag other than 0 or 1, or a code shorter than
+8 bytes, fails to decode. JSON omits the field when it is `None`, so the stored
+payload of an event without a code does not change.
+
+`tests/callout_code.rs` decodes one buy per economic mode, captured in LiteSVM from
+the pre-upgrade program (contracts `1a5079f`) and the upgraded program, and checks
+that only the code differs. Without the field, the test does not compile. The crate
+tests (37), Rustdoc with `-D warnings`, the layout-only build, `cargo clippy
+--all-targets --all-features -- -D warnings` and `cargo fmt --check` passed with the
+pinned toolchain (Rust 1.96.1).

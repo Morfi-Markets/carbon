@@ -90,12 +90,12 @@ pub const EVENT_LAYOUTS: &[EventLayout] = &[
         discriminator: [185, 149, 242, 59, 8, 79, 33, 26],
     },
     EventLayout {
-        name: "PrincipalTradeEvent",
-        discriminator: [83, 144, 146, 208, 188, 4, 54, 100],
-    },
-    EventLayout {
         name: "RewardPayoutWalletUpdated",
         discriminator: [198, 17, 227, 92, 73, 2, 193, 124],
+    },
+    EventLayout {
+        name: "TradeEvent",
+        discriminator: [189, 219, 127, 211, 78, 230, 97, 238],
     },
     EventLayout {
         name: "UserPositionsClosedEvent",
@@ -148,10 +148,6 @@ pub const EVENT_LAYOUTS: &[EventLayout] = &[
     EventLayout {
         name: "WalletPrizeEntitlementClearedEvent",
         discriminator: [100, 172, 112, 83, 93, 232, 214, 201],
-    },
-    EventLayout {
-        name: "WalletTradeEvent",
-        discriminator: [251, 216, 11, 8, 56, 243, 152, 247],
     },
     EventLayout {
         name: "WinnerTokenLaunchEvent",
