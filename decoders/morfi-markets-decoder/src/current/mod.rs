@@ -3,7 +3,8 @@
 mod config_accounts;
 mod events;
 pub use config_accounts::{
-    AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode, TimedMarketConfig,
+    AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode, GiftConfig,
+    TimedMarketConfig,
 };
 pub use events::*;
 

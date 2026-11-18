@@ -142,7 +142,7 @@ fn layouts_resolve_by_name_and_by_data_without_arguments() {
 
 #[test]
 fn every_layout_is_unique_and_matches_its_decoded_context() {
-    assert_eq!(INSTRUCTION_LAYOUTS.len(), 31);
+    assert_eq!(INSTRUCTION_LAYOUTS.len(), 41);
     for layout in INSTRUCTION_LAYOUTS {
         let decoded = CurrentInstruction::decode(&layout.discriminator).expect(layout.name);
         assert_eq!(decoded.name, layout.name);

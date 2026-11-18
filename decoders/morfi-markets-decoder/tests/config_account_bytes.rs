@@ -4,7 +4,7 @@ use {
     carbon_core::deserialize::CarbonDeserialize,
     carbon_morfi_markets_decoder::{
         current::{
-            AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode,
+            AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode, GiftConfig,
             TimedMarketConfig,
         },
         types::FeeConfig,
@@ -156,4 +156,23 @@ fn assert_exact_account_bytes<T: CarbonDeserialize>(capture: &[u8]) {
         <T as CarbonDeserialize>::deserialize(&extra).is_none(),
         "{account} extra byte"
     );
+}
+
+#[test]
+fn gift_config_preserves_the_mint_independent_preset_and_fee() {
+    let mut bytes = vec![30, 120, 111, 208, 222, 196, 72, 201];
+    bytes.extend_from_slice(&[17; 32]);
+    bytes.extend_from_slice(&[23; 32]);
+    bytes.extend_from_slice(&[0xff; 32]);
+    bytes.extend_from_slice(&[0x2c, 0x01, 253, 254]);
+
+    let config = GiftConfig::deserialize(&bytes).expect("IDL GiftConfig");
+    assert_eq!(config.market_config, Pubkey::new_from_array([17; 32]));
+    assert_eq!(config.backend_authority, Pubkey::new_from_array([23; 32]));
+    assert_eq!(config.label, [0xff; 32]);
+    assert_eq!(
+        (config.gift_fee_bps, config.admin_bump, config.bump),
+        (300, 253, 254)
+    );
+    assert_exact_account_bytes::<GiftConfig>(&bytes);
 }

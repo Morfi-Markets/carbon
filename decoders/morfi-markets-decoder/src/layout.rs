@@ -30,6 +30,23 @@ impl InstructionLayout {
             .find(|layout| layout.discriminator == discriminator)
     }
 
+    /// Name of the config account written by this instruction, if any.
+    pub fn config_account(&self) -> Option<&'static str> {
+        match self.name {
+            "init_admin_config"
+            | "set_market_creation_restricted"
+            | "update_config_admin"
+            | "update_gift_admin"
+            | "update_rent_treasury"
+            | "update_transaction_authority" => Some("admin_config"),
+            "init_gift_config" | "update_gift_backend_authority" => Some("gift_config"),
+            "set_market_config_enabled" | "update_market_transaction_authority" => {
+                Some("market_config")
+            }
+            _ => None,
+        }
+    }
+
     /// Finds the position of an account in the instruction account list.
     ///
     /// It is a `const fn`, so a consumer can hold a position in a constant.
@@ -367,6 +384,28 @@ pub const INSTRUCTION_LAYOUTS: &[InstructionLayout] = &[
         ],
     },
     InstructionLayout {
+        name: "init_admin_config",
+        discriminator: [148, 140, 143, 75, 126, 18, 172, 147],
+        account_names: &[
+            "payer",
+            "upgrade_authority",
+            "admin_config",
+            "program_data",
+            "system_program",
+        ],
+    },
+    InstructionLayout {
+        name: "init_gift_config",
+        discriminator: [14, 130, 243, 115, 117, 251, 24, 217],
+        account_names: &[
+            "gift_admin_authority",
+            "admin_config",
+            "market_config",
+            "gift_config",
+            "system_program",
+        ],
+    },
+    InstructionLayout {
         name: "init_user_positions",
         discriminator: [172, 140, 197, 227, 61, 163, 59, 76],
         account_names: &[
@@ -487,6 +526,22 @@ pub const INSTRUCTION_LAYOUTS: &[InstructionLayout] = &[
         account_names: TRADE_ACCOUNTS,
     },
     InstructionLayout {
+        name: "set_market_config_enabled",
+        discriminator: [91, 105, 92, 26, 190, 44, 15, 10],
+        account_names: &[
+            "config_admin",
+            "admin_config",
+            "market_config",
+            "event_authority",
+            "program",
+        ],
+    },
+    InstructionLayout {
+        name: "set_market_creation_restricted",
+        discriminator: [147, 98, 22, 211, 160, 233, 243, 55],
+        account_names: &["config_admin", "admin_config"],
+    },
+    InstructionLayout {
         name: "sweep_expired_backer_fee_liability",
         discriminator: [134, 2, 3, 113, 55, 80, 131, 82],
         account_names: &[
@@ -548,6 +603,43 @@ pub const INSTRUCTION_LAYOUTS: &[InstructionLayout] = &[
             "event_authority",
             "program",
         ],
+    },
+    InstructionLayout {
+        name: "update_config_admin",
+        discriminator: [30, 254, 195, 1, 169, 26, 214, 39],
+        account_names: &["upgrade_authority", "admin_config", "program_data"],
+    },
+    InstructionLayout {
+        name: "update_gift_admin",
+        discriminator: [244, 27, 60, 224, 86, 203, 69, 248],
+        account_names: &["upgrade_authority", "admin_config", "program_data"],
+    },
+    InstructionLayout {
+        name: "update_gift_backend_authority",
+        discriminator: [142, 49, 62, 5, 223, 232, 11, 236],
+        account_names: &["gift_admin_authority", "admin_config", "gift_config"],
+    },
+    InstructionLayout {
+        name: "update_market_transaction_authority",
+        discriminator: [156, 132, 11, 78, 215, 147, 149, 56],
+        account_names: &[
+            "upgrade_authority",
+            "admin_config",
+            "market_config",
+            "program_data",
+            "event_authority",
+            "program",
+        ],
+    },
+    InstructionLayout {
+        name: "update_rent_treasury",
+        discriminator: [228, 93, 206, 229, 249, 63, 54, 221],
+        account_names: &["upgrade_authority", "admin_config", "program_data"],
+    },
+    InstructionLayout {
+        name: "update_transaction_authority",
+        discriminator: [239, 180, 137, 176, 183, 208, 20, 235],
+        account_names: &["upgrade_authority", "admin_config", "program_data"],
     },
     InstructionLayout {
         name: "withdraw_outcome_tokens",
