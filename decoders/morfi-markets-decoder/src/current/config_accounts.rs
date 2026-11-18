@@ -34,6 +34,30 @@ impl CarbonDeserialize for AdminConfig {
     }
 }
 
+/// Per-preset gifting authority and immutable fee.
+#[derive(Debug, Clone, borsh::BorshDeserialize, PartialEq, Eq)]
+pub struct GiftConfig {
+    pub market_config: Pubkey,
+    pub backend_authority: Pubkey,
+    pub label: [u8; 32],
+    pub gift_fee_bps: u16,
+    pub admin_bump: u8,
+    pub bump: u8,
+}
+
+impl GiftConfig {
+    /// Anchor discriminator at the start of the account data.
+    pub const DISCRIMINATOR: [u8; 8] = discriminator("0x1e786fd0dec448c9");
+}
+
+impl CarbonDeserialize for GiftConfig {
+    const DISCRIMINATOR: &'static [u8] = &Self::DISCRIMINATOR;
+
+    fn deserialize(data: &[u8]) -> Option<Self> {
+        deserialize_config(data)
+    }
+}
+
 /// Preset for a market that resolves at a conviction threshold.
 #[derive(Debug, Clone, borsh::BorshDeserialize, PartialEq, Eq)]
 pub struct ConvictionMarketConfig {
