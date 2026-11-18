@@ -1,6 +1,10 @@
-//! Typed current CPI events and discriminator-based parent instruction contexts.
+//! Current config accounts, CPI events, and parent instruction contexts.
 
+mod config_accounts;
 mod events;
+pub use config_accounts::{
+    AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode, TimedMarketConfig,
+};
 pub use events::*;
 
 #[derive(

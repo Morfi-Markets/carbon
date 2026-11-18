@@ -27,13 +27,18 @@ rejects it or, when the overlapping bytes happen to fit, misreads it as a curren
 `TradeEvent`; current deployments use a fresh program ID.
 Recognized current instruction contexts retain their raw bytes without validating
 arguments or account presence.
-Borsh layouts permit trailing bytes except the typed configuration initializers,
-which retain exact-size checks. Account arrangement is separate from decoding and
-does not verify signer or writable privileges.
+The typed configuration initializers require the exact size. Other instruction
+and event layouts permit trailing bytes. Account arrangement is separate from
+decoding and does not verify signer or writable privileges.
 
 Use `current::CurrentInstruction` for recognized current instructions and
 `current::CurrentEvent` for current typed CPI events. Current instruction account
 mapping accepts the required prefix plus extra accounts; argument bytes remain raw.
+
+Use `CarbonDeserialize::deserialize` with `current::AdminConfig`,
+`current::ConvictionMarketConfig`, or `current::TimedMarketConfig` to decode stored
+account data. Each decoder requires its discriminator and the exact Borsh body.
+The caller verifies the owner, executable flag, and PDA.
 
 `layout::InstructionLayout` gives the name, discriminator, and ordered account
 names of a current instruction without instruction data. Find a layout with

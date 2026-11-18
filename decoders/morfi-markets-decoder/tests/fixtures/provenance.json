@@ -59,6 +59,27 @@
       "fixture_sha256": "8cbe5bb863af85a52a2efc877b5b1e91a2b7349d1966e5e276b6ed546856e268",
       "layout": "contracts 24195bc (callout_code)",
       "derivation": "LiteSVM, one 10 USDC buy of outcome 0 on a fresh 2-outcome PrincipalBack market from the contracts tests fixture (createMarketFixture, sendCreateMarket, ensureUserPositions, clock at tradingStartedTs). The file is the emitted inner instruction data: the self-CPI tag, the event discriminator and the payload. The buy sends callout_code = Some(b\"MORFI-42\")."
+    },
+    {
+      "fixture": "admin-config-account.bin",
+      "fixture_sha256": "a0b8b03be6c5f18a9e9605363b7d8f8b97de1cc1f8a8e65e70e77b7628fec752",
+      "program_sha256": "6e767d5fbfe39847b7ab75a8887c78be2114731b1f0ae24cb9bfac57fc2a7207",
+      "layout": "contracts 1a5079f, localnet build",
+      "derivation": "Raw account data from LiteSVM 0.2.0 after initialization and a signed instruction to open conviction market creation. Public keys belong to synthetic fixture actors."
+    },
+    {
+      "fixture": "conviction-config-account.bin",
+      "fixture_sha256": "3dc2b758688dcd4e49a64861394c1a937391a39b370fbf675aa371b4ccfb30ee",
+      "program_sha256": "6e767d5fbfe39847b7ab75a8887c78be2114731b1f0ae24cb9bfac57fc2a7207",
+      "layout": "contracts 1a5079f, localnet build",
+      "derivation": "Raw account data from LiteSVM 0.2.0 after a signed instruction to initialize a PrincipalBack conviction config with a nonce of 18446744073709551614."
+    },
+    {
+      "fixture": "timed-config-account.bin",
+      "fixture_sha256": "acd0b8e8af3359f66d0802a592be39b34e46efddcf099b4c888dafed67a35305",
+      "program_sha256": "6e767d5fbfe39847b7ab75a8887c78be2114731b1f0ae24cb9bfac57fc2a7207",
+      "layout": "contracts 1a5079f, localnet build",
+      "derivation": "Raw account data from LiteSVM 0.2.0 after signed instructions to initialize a PrincipalBack timed config with a nonce of 410002 and disable it."
     }
   ]
 }
