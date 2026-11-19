@@ -13,6 +13,8 @@ use carbon_core::deserialize::CarbonDeserialize;
 mod add_outcome;
 mod back;
 pub use add_outcome::{AddOutcome, AddOutcomeInstructionAccounts};
+mod config;
+pub use config::{ConfigInstructionArgs, InitAdminConfig, InitGiftConfig, ResolutionMode};
 mod create_market;
 mod prepare_outcomes;
 pub use back::Back;

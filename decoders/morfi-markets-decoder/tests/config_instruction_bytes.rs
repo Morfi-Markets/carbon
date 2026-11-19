@@ -1,21 +1,26 @@
 #![cfg(feature = "decoder")]
 
 use {
-    carbon_morfi_markets_decoder::current::{
-        ConfigMutation, InitAdminConfig, InitGiftConfig, ResolutionMode,
+    carbon_morfi_markets_decoder::{
+        current::CurrentInstruction,
+        instructions::{ConfigInstructionArgs, InitAdminConfig, InitGiftConfig, ResolutionMode},
     },
     solana_pubkey::Pubkey,
 };
 
-fn assert_decoded(discriminator: [u8; 8], args: &[u8], expected: ConfigMutation) {
+fn config_arguments(data: &[u8]) -> Option<ConfigInstructionArgs> {
+    CurrentInstruction::decode(data)?.config_args()
+}
+
+fn assert_decoded(discriminator: [u8; 8], args: &[u8], expected: ConfigInstructionArgs) {
     let mut data = discriminator.to_vec();
     data.extend_from_slice(args);
-    assert_eq!(ConfigMutation::decode(&data).as_ref(), Some(&expected));
+    assert_eq!(config_arguments(&data).as_ref(), Some(&expected));
     let mut with_trailing_bytes = data.clone();
     with_trailing_bytes.push(0xff);
-    assert_eq!(ConfigMutation::decode(&with_trailing_bytes), Some(expected));
+    assert_eq!(config_arguments(&with_trailing_bytes), Some(expected));
     data.pop();
-    assert_eq!(ConfigMutation::decode(&data), None);
+    assert_eq!(config_arguments(&data), None);
 }
 
 #[test]
@@ -24,7 +29,7 @@ fn writable_config_payloads_follow_the_markets_idl() {
     assert_decoded(
         [148, 140, 143, 75, 126, 18, 172, 147],
         &[[1; 32], [2; 32], [3; 32], [4; 32]].concat(),
-        ConfigMutation::InitAdminConfig(InitAdminConfig {
+        ConfigInstructionArgs::InitAdminConfig(InitAdminConfig {
             config_admin: key(1),
             gift_admin: key(2),
             transaction_authority: key(3),
@@ -35,7 +40,7 @@ fn writable_config_payloads_follow_the_markets_idl() {
     assert_decoded(
         [14, 130, 243, 115, 117, 251, 24, 217],
         &gift_data,
-        ConfigMutation::InitGiftConfig(InitGiftConfig {
+        ConfigInstructionArgs::InitGiftConfig(InitGiftConfig {
             label: [5; 32],
             backend_authority: key(6),
             gift_fee_bps: 0x1234,
@@ -45,27 +50,27 @@ fn writable_config_payloads_follow_the_markets_idl() {
     for (discriminator, expected) in [
         (
             [30, 254, 195, 1, 169, 26, 214, 39],
-            ConfigMutation::UpdateConfigAdmin(value),
+            ConfigInstructionArgs::UpdateConfigAdmin(value),
         ),
         (
             [244, 27, 60, 224, 86, 203, 69, 248],
-            ConfigMutation::UpdateGiftAdmin(value),
+            ConfigInstructionArgs::UpdateGiftAdmin(value),
         ),
         (
             [239, 180, 137, 176, 183, 208, 20, 235],
-            ConfigMutation::UpdateTransactionAuthority(value),
+            ConfigInstructionArgs::UpdateTransactionAuthority(value),
         ),
         (
             [228, 93, 206, 229, 249, 63, 54, 221],
-            ConfigMutation::UpdateRentTreasury(value),
+            ConfigInstructionArgs::UpdateRentTreasury(value),
         ),
         (
             [156, 132, 11, 78, 215, 147, 149, 56],
-            ConfigMutation::UpdateMarketTransactionAuthority(value),
+            ConfigInstructionArgs::UpdateMarketTransactionAuthority(value),
         ),
         (
             [142, 49, 62, 5, 223, 232, 11, 236],
-            ConfigMutation::UpdateGiftBackendAuthority(value),
+            ConfigInstructionArgs::UpdateGiftBackendAuthority(value),
         ),
     ] {
         assert_decoded(discriminator, value.as_ref(), expected);
@@ -73,14 +78,14 @@ fn writable_config_payloads_follow_the_markets_idl() {
     assert_decoded(
         [91, 105, 92, 26, 190, 44, 15, 10],
         &[0],
-        ConfigMutation::SetMarketConfigEnabled(false),
+        ConfigInstructionArgs::SetMarketConfigEnabled(false),
     );
     for (encoded, resolution_mode) in [(0, ResolutionMode::Conviction), (1, ResolutionMode::Timed)]
     {
         assert_decoded(
             [147, 98, 22, 211, 160, 233, 243, 55],
             &[encoded, 1],
-            ConfigMutation::SetMarketCreationRestricted {
+            ConfigInstructionArgs::SetMarketCreationRestricted {
                 resolution_mode,
                 restricted: true,
             },
@@ -89,14 +94,21 @@ fn writable_config_payloads_follow_the_markets_idl() {
 }
 
 #[test]
-fn malformed_flags_modes_and_unknown_discriminators_have_no_config_arguments() {
-    assert_eq!(
-        ConfigMutation::decode(&[91, 105, 92, 26, 190, 44, 15, 10, 2]),
-        None
-    );
-    assert_eq!(
-        ConfigMutation::decode(&[147, 98, 22, 211, 160, 233, 243, 55, 2, 0]),
-        None
-    );
-    assert_eq!(ConfigMutation::decode(&[0xff; 16]), None);
+fn invalid_arguments_preserve_the_recognized_instruction_context() {
+    for (name, data) in [
+        (
+            "set_market_config_enabled",
+            &[91, 105, 92, 26, 190, 44, 15, 10, 2][..],
+        ),
+        (
+            "set_market_creation_restricted",
+            &[147, 98, 22, 211, 160, 233, 243, 55, 2, 0],
+        ),
+    ] {
+        let instruction = CurrentInstruction::decode(data).expect("known Markets instruction");
+        assert_eq!(instruction.name, name);
+        assert_eq!(instruction.data.as_slice(), data);
+        assert_eq!(instruction.config_args(), None);
+    }
+    assert!(CurrentInstruction::decode(&[0xff; 16]).is_none());
 }

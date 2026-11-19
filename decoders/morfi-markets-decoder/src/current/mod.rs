@@ -1,13 +1,11 @@
 //! Current config accounts, CPI events, and parent instruction contexts.
 
 mod config_accounts;
-mod config_mutation;
 mod events;
 pub use config_accounts::{
     AdminConfig, CommonMarketConfig, ConvictionMarketConfig, EconomicMode, GiftConfig,
     TimedMarketConfig,
 };
-pub use config_mutation::{ConfigMutation, InitAdminConfig, InitGiftConfig, ResolutionMode};
 pub use events::*;
 
 #[derive(
