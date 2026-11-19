@@ -46,6 +46,10 @@ names of a current instruction without instruction data. Find a layout with
 in `layout::INSTRUCTION_LAYOUTS`. `CurrentInstruction::decode` uses the same table,
 and `current` re-exports both items. `InstructionLayout::position` is a `const fn`.
 
+Use `current::ConfigMutation::decode` to read the arguments of admin and gift
+config initializers and config policy changes. The typed conviction and timed
+preset initializers remain in `instructions`.
+
 `layout::EVENT_LAYOUTS` gives the name and discriminator of each current CPI event,
 one for each `CurrentEvent` variant. An event payload starts with
 `layout::ANCHOR_EVENT_TAG` and then the discriminator. `CurrentEvent::recognizes`
