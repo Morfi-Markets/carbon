@@ -23,6 +23,8 @@ pub const USER_POSITIONS: &[u8] = b"user_positions";
 pub const ADMIN_CONFIG: &[u8] = b"admin_config";
 /// `[MARKET_REWARDS, market]`
 pub const MARKET_REWARDS: &[u8] = b"market_rewards";
+/// `[STOCK_ALLOCATION, market]`
+pub const STOCK_ALLOCATION: &[u8] = b"stock_allocation";
 /// `[CONVICTION_MARKET_CONFIG, program, config_nonce]`
 pub const CONVICTION_MARKET_CONFIG: &[u8] = b"conviction_market_config";
 /// `[TIMED_MARKET_CONFIG, program, config_nonce]`
@@ -50,6 +52,7 @@ pub const ALL: &[&[u8]] = &[
     USER_POSITIONS,
     ADMIN_CONFIG,
     MARKET_REWARDS,
+    STOCK_ALLOCATION,
     CONVICTION_MARKET_CONFIG,
     TIMED_MARKET_CONFIG,
     EVENT_SCHEDULE,

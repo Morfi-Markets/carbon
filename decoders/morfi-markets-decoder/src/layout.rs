@@ -462,20 +462,6 @@ pub const INSTRUCTION_LAYOUTS: &[InstructionLayout] = &[
         account_names: REWARD_LAUNCH_ACCOUNTS,
     },
     InstructionLayout {
-        name: "claim_stock_allocation",
-        discriminator: [93, 80, 75, 45, 188, 6, 245, 244],
-        account_names: &[
-            "treasury",
-            "program_data",
-            "allocation",
-            "market_rewards",
-            "mint",
-            "vault",
-            "destination",
-            "token_program",
-        ],
-    },
-    InstructionLayout {
         name: "refund_expired_backed",
         discriminator: [55, 140, 59, 210, 157, 132, 63, 249],
         account_names: &[
